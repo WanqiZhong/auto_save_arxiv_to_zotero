@@ -126,8 +126,8 @@ class SavePageWorker:
                 if not os.path.exists(self.args['extension_path']):
                     raise Exception(f"Extension directory not found: {self.args['extension_path']}")
                 
-                if not os.path.exists(self.args['zoetero_storage']):
-                    raise Exception(f"Zotero storage directory not found: {self.args['zoetero_storage']}")
+                if not os.path.exists(self.args['zotero_storage']):
+                    raise Exception(f"Zotero storage directory not found: {self.args['zotero_storage']}")
 
                 browser_context = p.chromium.launch_persistent_context(
                     user_data_dir=self.args['user_data_dir'],
@@ -653,7 +653,7 @@ class MainWindow(QWidget):
 
 
         # 添加 URL 按钮
-        self.add_url_button = QPushButton("添加")
+        self.add_url_button = QPushButton("添加（Enter）")
         self.add_url_button.clicked.connect(self.add_url)
         url_layout.addWidget(self.add_url_button)
 
