@@ -121,13 +121,13 @@ class SavePageWorker:
             with sync_playwright() as p:
                 # Launch browser and load extension if needed
                 if not os.path.exists(self.args['user_data_dir']):
-                    raise Exception(f"User data directory not found: {self.args['user_data_dir']}")
+                    raise Exception(f"无法找到用户数据目录: {self.args['user_data_dir']}")
 
                 if not os.path.exists(self.args['extension_path']):
-                    raise Exception(f"Extension directory not found: {self.args['extension_path']}")
+                    raise Exception(f"无法找到扩展目录: {self.args['extension_path']}")
                 
                 if not os.path.exists(self.args['zotero_storage']):
-                    raise Exception(f"Zotero storage directory not found: {self.args['zotero_storage']}")
+                    raise Exception(f"无法找到 Zotero 存储目录: {self.args['zotero_storage']}")
 
                 browser_context = p.chromium.launch_persistent_context(
                     user_data_dir=self.args['user_data_dir'],
@@ -157,9 +157,9 @@ class SavePageWorker:
                 self.signals.progress.emit(self.row, 4)  # Stage 4
                 # Wait for translation (adjust selector as needed)
                 try:
-                    page.wait_for_selector('font.immersive-translate-loading-spinner.notranslate', state='detached', timeout=60000)
+                    page.wait_for_selector('font.immersive-translate-loading-spinner.notranslate', state='detached', timeout=1200000)
                 except Exception:
-                    print("等待翻译完成超时，可能翻译尚未完成。")
+                    raise Exception("等待翻译完成超时，可能翻译尚未完成")
 
                 self.check_cancelled()
                 self.signals.progress.emit(self.row, 5)  # Stage 5
@@ -211,8 +211,7 @@ class SavePageWorker:
                         response = requests.get(resource_url_absolute, timeout=10)
                         response.raise_for_status()
                     except Exception as e:
-                        print(f"Failed to download {resource_url_absolute}: {e}")
-                        return
+                        raise Exception(f"下载资源失败 {resource_url_absolute} ")
 
                     content_type = response.headers.get('Content-Type')
                     if not content_type:
@@ -287,10 +286,10 @@ class SavePageWorker:
                     if 'successful' in response and response['successful']:
                         pass
                     else:
-                        print("保存失败，响应结果:", response)
+                        raise Exception("创建附件失败")
 
                 except Exception as e:
-                    raise Exception(f"Failed to save to Zotero: {e}")
+                    raise Exception(f"保存失败，错误信息: {e}")
            
                 self.check_cancelled()
                 browser_context.close()
@@ -653,7 +652,7 @@ class MainWindow(QWidget):
 
 
         # 添加 URL 按钮
-        self.add_url_button = QPushButton("添加（Enter）")
+        self.add_url_button = QPushButton(" 添加（Enter）")
         self.add_url_button.clicked.connect(self.add_url)
         url_layout.addWidget(self.add_url_button)
 
