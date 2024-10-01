@@ -1,23 +1,23 @@
 # 简介
 🚀 批量把 Arxiv 文献翻译为双语版本并保存到您的 Zotero 🚀
 
-# 安装
-## 先决条件
+## 安装
+### 先决条件
 1. 安装 [Zotero](https://www.zotero.org/download/) 
 
-## 安装依赖
+### 安装依赖
 ```
 pip install setuptools
 pip install -e .
 playwright install chromium
 ```
 
-# 运行
+## 运行
 ```
 python run.py
 ```
 
-# 首次运行时配置
+## 首次运行时配置
 在弹出的窗口中配置如下信息：
 1. Zotero 数据库路径: 
    - Linux/MacOS 一般为 `~/Zotero/storage`
@@ -32,7 +32,7 @@ python run.py
    - 将 "Default Group Permissions :设为 "Read/Write"
    - 点击 "Save Key"，获得生成的 API Key 并粘贴至配置中的 "API Key"。
 
-# 高级配置
+## 高级配置
 1. 更换翻译 API 和其他翻译设定
     默认使用的是 智谱GLM翻译API，如需更换翻译API，请在 Chrome 浏览器中对沉浸式翻译的配置进行更改，随后请将插件的配置文件覆盖 `config/extension` 文件夹。
     具体而言，分为如下步骤：
