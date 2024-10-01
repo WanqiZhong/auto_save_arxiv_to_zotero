@@ -1,5 +1,5 @@
 # User Data
-config/user_data/**
+config/**
 
 # General
 .DS_Store
