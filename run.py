@@ -70,9 +70,10 @@ class SavePageWorker:
         1. https://arxiv.org/abs/{YYMM}.{NNNNN}
         2. https://arxiv.org/html/{YYMM}.{NNNNN}
         3. https://arxiv.org/pdf/{YYMM}.{NNNNN}
-        4. https://ar5iv.labs.arxiv.org/html/{YYMM}.{NNNNN}
-        5. arxiv.org/abs/{YYMM}.{NNNNN} (无 https 前缀)
-        6. ar5iv.labs.arxiv.org/html/{YYMM}.{NNNNN} (无 https 前缀)
+        4. https://ar5iv.org/abs/{YYMM}.{NNNNN}
+        5. https://ar5iv.labs.arxiv.org/html/{YYMM}.{NNNNN}
+        6. arxiv.org/abs/{YYMM}.{NNNNN} (无 https 前缀)
+        7. ar5iv.labs.arxiv.org/html/{YYMM}.{NNNNN} (无 https 前缀)
         """
 
         # 补全无 http 前缀的链接
@@ -80,7 +81,7 @@ class SavePageWorker:
             arxiv_url = 'https://' + arxiv_url
 
         # 正则匹配不同格式的 Arxiv 链接
-        match = re.search(r'https://(?:arxiv\.org|ar5iv\.labs\.arxiv\.org)/(abs|html|pdf)/(\d{4})\.(\d{5})', arxiv_url)
+        match = re.search(r'https://(?:arxiv\.org|ar5iv\.labs\.arxiv\.org|ar5iv\.org|)/(abs|html|pdf)/(\d{4})\.(\d{5})', arxiv_url)
         if not match:
             print("无效的 Arxiv 链接格式")
             print(supported_formats)
@@ -632,7 +633,7 @@ class MainWindow(QWidget):
         
         # URL 输入框
         self.url_input = QLineEdit()
-        self.url_input.setPlaceholderText("输入URL, 支持输入 arxiv.* / ar5iv.* 等链接, 自动转换为 HTML 格式")
+        self.url_input.setPlaceholderText("输入URL, 支持输入 arxiv.* / ar5iv.* 等链接, 自动转换为 HTML 格式，按下回车以添加，完成后双击可打开")
         self.url_input.returnPressed.connect(self.add_url)  
         url_layout.addWidget(self.url_input, 3)  # 设置较大的拉伸因子
 
