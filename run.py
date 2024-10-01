@@ -679,6 +679,7 @@ class MainWindow(QWidget):
 
         self.delete_shortcut = QShortcut(QKeySequence(Qt.Key_Backspace), self.table_widget)
         self.delete_shortcut.activated.connect(self.delete_selected_row)
+        self.table_widget.cellDoubleClicked.connect(self.open_saved_html)
 
 
         # Control Buttons
@@ -716,6 +717,13 @@ class MainWindow(QWidget):
         self.current_collection_name = self.args.get('last_used_collection_name', '')
         self.update_collection_display()
 
+    def open_saved_html(self):
+        row = self.table_widget.currentRow()
+        if row >= 0:
+            output_filename = self.table_widget.item(row, 2).data(Qt.UserRole) + ".html"
+            output_filepath = os.path.join(self.args['output_dir'], output_filename)
+            if output_filepath:
+                os.system(f"open {output_filepath}")
 
     def load_zotero_collections(self):
         try:
@@ -804,8 +812,6 @@ class MainWindow(QWidget):
             progress_bar.setAlignment(Qt.AlignCenter)
             progress_bar.setStyleSheet("QProgressBar::chunk { background-color: #2196F3; }")
             self.table_widget.setCellWidget(row_position, 3, progress_bar)
-            
-
             self.url_input.clear()
 
     def start_saving(self):
