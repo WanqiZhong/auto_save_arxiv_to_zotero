@@ -115,7 +115,7 @@ class SavePageWorker:
             self.signals.progress.emit(self.row, 1)  # Stage 1
             arxiv_url = self.check_arxiv_date_and_modify_url(self.url)
             if not arxiv_url:
-                raise Exception("Invalid Arxiv URL format.")
+                raise Exception("不合法的 Arxiv 路径")
 
             self.check_cancelled()
             self.signals.progress.emit(self.row, 2)  # Stage 2
