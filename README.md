@@ -34,7 +34,7 @@ python run.py
    - 将 "Default Group Permissions :设为 "Read/Write"
    - 点击 "Save Key"，获得生成的 API Key 并粘贴至配置中的 "API Key"。
 
-## 高级配置
+## 高级配置（可选）
 1. 更换翻译 API 和其他翻译设定:
     
     默认使用的是 智谱GLM翻译API，如需更换翻译API，请在 Chrome 浏览器中对沉浸式翻译的配置进行更改，随后请将插件的配置文件覆盖 `config/extension` 文件夹。
