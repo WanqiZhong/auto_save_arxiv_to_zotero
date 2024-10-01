@@ -720,10 +720,10 @@ class MainWindow(QWidget):
     def open_saved_html(self):
         row = self.table_widget.currentRow()
         if row >= 0:
-            output_filename = self.table_widget.item(row, 2).data(Qt.UserRole) + ".html"
+            output_filename = self.table_widget.item(row, 2).text() + ".html"
             output_filepath = os.path.join(self.args['output_dir'], output_filename)
-            if output_filepath:
-                os.system(f"open {output_filepath}")
+            if os.path.exists(output_filepath):
+                os.system(f"open \"{output_filepath}\"")
 
     def load_zotero_collections(self):
         try:
