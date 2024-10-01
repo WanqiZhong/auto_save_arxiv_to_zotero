@@ -1,0 +1,110 @@
+{
+   "PdfProFile": {
+      "message": "Yapay Zeka Odaklı PDF Pro Çevirisi"
+   },
+   "brandDescription": {
+      "message": "Web sayfalarını, PDF'leri ve e-kitapları çevir, video altyazılarını çevir, dil öğren"
+   },
+   "brandDescriptionForSafari": {
+      "message": "Web sayfalarını, PDF'leri ve e-kitapları çevir, video altyazılarını çevir, dil öğren"
+   },
+   "brandName": {
+      "message": "Immersive Translate - Web ve PDF Çevir"
+   },
+   "donateContext": {
+      "message": "Bağış Yap"
+   },
+   "openAboutPage": {
+      "message": "Hakkında Sayfasını Aç"
+   },
+   "openEbookBuilder": {
+      "message": "Çift Dilli ePUB e-Kitaplar Oluştur"
+   },
+   "openEbookViewer": {
+      "message": "Yerel e-Kitapları Oku"
+   },
+   "openOptionsPage": {
+      "message": "Ayarlar Sayfasını Aç"
+   },
+   "shareToDraft": {
+      "message": "Sayfayı çift dilli olarak paylaş"
+   },
+   "shortBrandName": {
+      "message": "Immersive Translate"
+   },
+   "textTranslate": {
+      "message": "Metin Çevir"
+   },
+   "toggleMouseHoverTranslateDirectly": {
+      "message": "Fareyi üzerine getirerek çevir"
+   },
+   "toggleOnlyTransation": {
+      "message": "Çift Dilli/Sadece Çeviri Moduna Geç"
+   },
+   "toggleTranslatePage": {
+      "message": "{targetLanguage} olarak çevirin"
+   },
+   "toggleTranslatePageOfficialPage": {
+      "message": "Web sayfasını çevir/Gösterilen orijinal metin"
+   },
+   "toggleTranslateTheMainPage": {
+      "message": "Ana sayfayı çevir/Orijinal metni göster"
+   },
+   "toggleTranslateTheWholePage": {
+      "message": "Tüm sayfayı çevir/Orijinal metni göster"
+   },
+   "toggleTranslateToThePageEndImmediately": {
+      "message": "Anında sayfanın altına çevirin/Orijinal metni görüntüleyin"
+   },
+   "toggleTranslationMask": {
+      "message": "Geçerli sayfa için çevrilmiş metinde bulanıklaştırma efektini (öğrenme modu) değiştir"
+   },
+   "toggleVideoSubtitlePreTranslation": {
+      "message": "Immersive Translation ile Altyazıları Önceden Çevir"
+   },
+   "translateInputBox": {
+      "message": "Geçerli giriş kutusunun içeriğini çevir"
+   },
+   "translateLocalHtmlFile": {
+      "message": "Yerel HTML Dosyasını Çevir"
+   },
+   "translateLocalPdfFile": {
+      "message": "Yerel PDF Dosyasını Çevir"
+   },
+   "translateLocalSubtitleFile": {
+      "message": "Yerel Altyazı Dosyasını Çevir"
+   },
+   "translateText": {
+      "message": "Translate \"{text}\""
+   },
+   "translateWithBing": {
+      "message": "Geçici olarak sayfayı Bing ile çevir"
+   },
+   "translateWithClaude": {
+      "message": "Geçici olarak sayfayı Claude ile çevir"
+   },
+   "translateWithCustom1": {
+      "message": "Geçerli sayfayı çevirmek için özel çeviri hizmetlerinin geçici kullanımı(1)"
+   },
+   "translateWithCustom2": {
+      "message": "Geçerli sayfayı çevirmek için özel çeviri hizmetlerinin geçici kullanımı(2)"
+   },
+   "translateWithCustom3": {
+      "message": "Geçerli sayfayı çevirmek için özel çeviri hizmetlerinin geçici kullanımı(3)"
+   },
+   "translateWithDeepL": {
+      "message": "Geçici olarak sayfayı DeepL ile çevir"
+   },
+   "translateWithGemini": {
+      "message": "Geçici olarak sayfayı Gemini ile çevir"
+   },
+   "translateWithGoogle": {
+      "message": "Geçici olarak sayfayı Google ile çevir"
+   },
+   "translateWithOpenAI": {
+      "message": "Geçici olarak sayfayı OpenAI ile çevir"
+   },
+   "translateWithTransmart": {
+      "message": "Geçici olarak sayfayı Transmart ile çevir"
+   }
+}

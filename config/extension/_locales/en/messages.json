@@ -1,0 +1,110 @@
+{
+   "PdfProFile": {
+      "message": "AI-Driven PDF Pro Translation"
+   },
+   "brandDescription": {
+      "message": "Free Translate Website, Translate PDF & Epub eBook, Translate Video Subtitles in Bilingual"
+   },
+   "brandDescriptionForSafari": {
+      "message": "Free Translate Website, Translate PDF & Epub eBook, Translate Video Subtitles in Bilingual"
+   },
+   "brandName": {
+      "message": "Immersive Translate - Translate Web & PDF"
+   },
+   "donateContext": {
+      "message": "Explore Sponsorship Benefits"
+   },
+   "openAboutPage": {
+      "message": "About / Feedback/Sponsor"
+   },
+   "openEbookBuilder": {
+      "message": "Create Bilingual EPUB E-books"
+   },
+   "openEbookViewer": {
+      "message": "Read local e-books"
+   },
+   "openOptionsPage": {
+      "message": "Open Settings Page"
+   },
+   "shareToDraft": {
+      "message": "Share Bilingual Page"
+   },
+   "shortBrandName": {
+      "message": "Immersive Translate"
+   },
+   "textTranslate": {
+      "message": "Text Translation"
+   },
+   "toggleMouseHoverTranslateDirectly": {
+      "message": "Temporarily enable or disable direct translation by mouse hover on the page"
+   },
+   "toggleOnlyTransation": {
+      "message": "Switch to /translation-only mode"
+   },
+   "toggleTranslatePage": {
+      "message": "Translate to {targetLanguage}"
+   },
+   "toggleTranslatePageOfficialPage": {
+      "message": "Translate Webpage/Show Original Text"
+   },
+   "toggleTranslateTheMainPage": {
+      "message": "Translate main page /Display original text"
+   },
+   "toggleTranslateTheWholePage": {
+      "message": "Translate entire page/Display original text"
+   },
+   "toggleTranslateToThePageEndImmediately": {
+      "message": "Translate instantly to the bottom of the page/Display original text"
+   },
+   "toggleTranslationMask": {
+      "message": "Toggle blur effect on translated text (learning mode) for the current page"
+   },
+   "toggleVideoSubtitlePreTranslation": {
+      "message": "Switch Video Subtitles with Immersive Translation Feature"
+   },
+   "translateInputBox": {
+      "message": "Translate the content of the current input box"
+   },
+   "translateLocalHtmlFile": {
+      "message": "Translate HTML/txt File"
+   },
+   "translateLocalPdfFile": {
+      "message": "Translate local PDF File"
+   },
+   "translateLocalSubtitleFile": {
+      "message": "Translate Local Subtitle File"
+   },
+   "translateText": {
+      "message": "Translate \"{text}\""
+   },
+   "translateWithBing": {
+      "message": "Temporarily translate the current page with Microsoft Translator"
+   },
+   "translateWithClaude": {
+      "message": "Temporarily use Claude to translate the current page."
+   },
+   "translateWithCustom1": {
+      "message": "Temporary use of custom translation services to translate the current page(1)"
+   },
+   "translateWithCustom2": {
+      "message": "Temporary use of custom translation services to translate the current page(2)"
+   },
+   "translateWithCustom3": {
+      "message": "Temporary use of custom translation services to translate the current page(3)"
+   },
+   "translateWithDeepL": {
+      "message": "Temporarily translate the current page with DeepL"
+   },
+   "translateWithGemini": {
+      "message": "Temporarily translate the current page with Gemini"
+   },
+   "translateWithGoogle": {
+      "message": "Temporarily translate the current page with Google"
+   },
+   "translateWithOpenAI": {
+      "message": "Temporarily translate the current page with OpenAI"
+   },
+   "translateWithTransmart": {
+      "message": "Temporarily translate the current page with Tencent Translator"
+   }
+}

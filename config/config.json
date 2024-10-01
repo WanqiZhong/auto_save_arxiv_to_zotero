@@ -1,0 +1,11 @@
+{
+    "zetero_storage": "在 Zotero 设置 -> 高级 -> 数据存储位置 获得地址，在后方加上 /storage",
+    "library_id": "访问这里以获得ID https://www.zotero.org/settings/security#applications",
+    "api_key": "访问这里以创建API https://www.zotero.org/settings/security#applications",
+    "library_type": "user",
+    "user_data_dir": "config/user_data",
+    "extension_path": "config/extension",
+    "output_dir": "download",
+    "last_used_collection_key": "",
+    "last_used_collection_name": ""
+}

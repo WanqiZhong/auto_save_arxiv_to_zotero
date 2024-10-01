@@ -1,0 +1,110 @@
+{
+   "PdfProFile": {
+      "message": "ترجمه PDF Pro محرک هوش مصنوعی"
+   },
+   "brandDescription": {
+      "message": "Web bilingual translation, completely free to use, supports Deepl/Google/Bing/Tencent/Youdao, etc."
+   },
+   "brandDescriptionForSafari": {
+      "message": "【ترجمه فرو رفته】 یک افزونه ترجمه صفحه وب دوزبانه رایگان (متن اصلی / ترجمه) ، در عین حال پشتیبانی از ترجمه PDF و ترجمه کتاب الکترونیکی EPUB با حفظ طرح بندی اصلی سند ، ترجمه زیرنویس دوزبانه ویدئوی آنلاین YouTube / Netflix ، پشتیبانی از خدمات ترجمه اصلی Deepl / Google؛"
+   },
+   "brandName": {
+      "message": "ترجمه همه‌جانبه"
+   },
+   "donateContext": {
+      "message": "با مزایای حمایت مالی آشنا شوید"
+   },
+   "openAboutPage": {
+      "message": "关于/反馈/赞助"
+   },
+   "openEbookBuilder": {
+      "message": "کتاب های الکترونیکی دو زبانه EPUB ایجاد کنید"
+   },
+   "openEbookViewer": {
+      "message": "کتاب های الکترونیکی محلی را بخوانید"
+   },
+   "openOptionsPage": {
+      "message": "برگه تنظیمات را باز کنید"
+   },
+   "shareToDraft": {
+      "message": "اشتراک‌گذاری صفحه دوزبانه"
+   },
+   "shortBrandName": {
+      "message": "Immersive Translate"
+   },
+   "textTranslate": {
+      "message": "ترجمه متن"
+   },
+   "toggleMouseHoverTranslateDirectly": {
+      "message": "در صفحه، به طور موقت فعال یا غیرفعال کردن ترجمه مستقیم موس هنگام اشاره"
+   },
+   "toggleOnlyTransation": {
+      "message": "تغییر به حالت دوزبانه / فقط متن ترجمه شده"
+   },
+   "toggleTranslatePage": {
+      "message": "ترجمه به {targetLanguage}"
+   },
+   "toggleTranslatePageOfficialPage": {
+      "message": "ترجمه صفحه وب/نمایش متن اصلی"
+   },
+   "toggleTranslateTheMainPage": {
+      "message": "ترجمه قسمت‌های اصلی برگه/نمایش متن اصلی"
+   },
+   "toggleTranslateTheWholePage": {
+      "message": "ترجمه تمام برگه/نمایش متن اصلی"
+   },
+   "toggleTranslateToThePageEndImmediately": {
+      "message": "از انتهای برگه ترجمه کنید/نمایش متن اصلی"
+   },
+   "toggleTranslationMask": {
+      "message": "نمایش/پنهان کردن جلوه تاری ترجمه"
+   },
+   "toggleVideoSubtitlePreTranslation": {
+      "message": "تغییر زیرنویس دوزبانه با استفاده از تنظیمات ترجمه فرو رفته اولویت دارد"
+   },
+   "translateInputBox": {
+      "message": "ترجمه محتوای جعبه ورودی فعلی"
+   },
+   "translateLocalHtmlFile": {
+      "message": "翻译本地 HTML 文件"
+   },
+   "translateLocalPdfFile": {
+      "message": "ترجمه پرونده PDF محلی"
+   },
+   "translateLocalSubtitleFile": {
+      "message": "فایل های زیرنویس محلی را ترجمه کنید"
+   },
+   "translateText": {
+      "message": "Translate \"{text}\""
+   },
+   "translateWithBing": {
+      "message": "از ترجمه مایکروسافت برای ترجمه موقتی صفحه فعلی استفاده کنید"
+   },
+   "translateWithClaude": {
+      "message": "به طور موقت از Claude برای ترجمه صفحه فعلی استفاده کنید"
+   },
+   "translateWithCustom1": {
+      "message": "به طور موقت از یک سرویس ترجمه سفارشی برای ترجمه صفحه فعلی استفاده کنید (1)"
+   },
+   "translateWithCustom2": {
+      "message": "به طور موقت از یک سرویس ترجمه سفارشی برای ترجمه صفحه فعلی استفاده کنید (2)"
+   },
+   "translateWithCustom3": {
+      "message": "به طور موقت از یک سرویس ترجمه سفارشی برای ترجمه صفحه فعلی استفاده کنید (3)"
+   },
+   "translateWithDeepL": {
+      "message": "استفاده موقت از DeepL برای ترجمه صفحه فعلی"
+   },
+   "translateWithGemini": {
+      "message": "به طور موقت از Gemini برای ترجمه صفحه فعلی استفاده کنید"
+   },
+   "translateWithGoogle": {
+      "message": "از ترجمه گوگل برای صفحه فعلی به طور موقت استفاده کنید"
+   },
+   "translateWithOpenAI": {
+      "message": "از OpenAI برای ترجمه موقتی صفحه فعلی استفاده کنید"
+   },
+   "translateWithTransmart": {
+      "message": "از ترجمه موقتی تنسنت برای صفحه فعلی استفاده کنید"
+   }
+}
