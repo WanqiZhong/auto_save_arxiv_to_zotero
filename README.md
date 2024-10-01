@@ -24,8 +24,10 @@ python run.py
    - Windows 一般为 `C:\Users\用户名\Zotero\storage`
    请访问 Zotero 设置 -> 高级 -> 数据存储位置 获得地址，在此地址下会有一个 `storage` 文件夹，将其路径粘贴到配置中的 "Zotero Storage Path"。
 2. Zotero Library ID: 
+   
    请访问 [Zotero Applications](https://www.zotero.org/settings/security#applications)，获取 "Your user ID for use in API calls is " 后方的数字并粘贴至配置中的 "Library ID"。
 3. Zotero API Key: 
+   
    请继续访问 [Zotero Applications](https://www.zotero.org/settings/security#applications):
    - 点击 "Create new private key"
    - 随意填写 "Key Name"，如 "AutoSaveToZotero"
