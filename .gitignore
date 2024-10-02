@@ -1,6 +1,6 @@
 # Gitignore for Zotero AutoSaveToZotero
 download/*
-config/config.json
+config/*
 
 # General
 .DS_Store
