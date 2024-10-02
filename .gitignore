@@ -1,3 +1,7 @@
+# Gitignore for Zotero AutoSaveToZotero
+download/*
+config/config.json
+
 # General
 .DS_Store
 .AppleDouble
