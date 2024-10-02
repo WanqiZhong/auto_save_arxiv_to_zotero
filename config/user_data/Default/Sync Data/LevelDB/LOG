@@ -1,0 +1,6 @@
+2024/10/02-07:26:45.458 8203 Reusing MANIFEST /Users/future/Library/Application Support/Google/Chrome/Default/Sync Data/LevelDB/MANIFEST-000001
+2024/10/02-07:26:45.472 8203 Recovering log #3
+2024/10/02-07:26:45.474 8203 Reusing old log /Users/future/Library/Application Support/Google/Chrome/Default/Sync Data/LevelDB/000003.log 
+2024/10/02-07:26:54.599 8203 Level-0 table #5: started
+2024/10/02-07:26:54.610 8203 Level-0 table #5: 124336 bytes OK
+2024/10/02-07:26:54.619 8203 Delete type=0 #3
