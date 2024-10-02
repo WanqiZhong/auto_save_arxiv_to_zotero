@@ -43,5 +43,4 @@ python run.py
     1.  在 Chrome 的沉浸式翻译插件中，配置翻译API为您所需的API，并修改其它设定。为方便使用，请确保`翻译设置 -> 进阶设置 -> 进入网页后，是否立即翻译到页面底部` 设置为开启（您可以在导出配置文件后关闭该选项）
     2. 在地址栏输入 `chrome://extensions/`，右上角打开开发者模式，找到沉浸式翻译插件，记录其 ID（形为 "bpoadfkcbjbfhfodi****hhhpibjhbnh", * 仅用于隐匿个人 ID 使用 ）
     3. 在地址栏输入 `chrome://version/`，获取`个人资料路径`并打开该路径。
-    4. 复制 `Default` 文件夹至 `config/user_data` 中覆盖原有文件夹。
-   
+    4. 复制 `Default/Sync Extension Settings` 文件夹至 `config/user_data/Sync Extension Settings` 中覆盖原有文件夹。（若不生效可尝试覆盖整个 `Default` 文件夹，但由于 `Default` 文件夹中包含有 `Cache` 目录，可能导致传输较慢）
