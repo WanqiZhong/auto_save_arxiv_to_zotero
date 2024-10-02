@@ -74,22 +74,39 @@ class SavePageWorker:
         5. https://ar5iv.labs.arxiv.org/html/{YYMM}.{NNNNN}
         6. arxiv.org/abs/{YYMM}.{NNNNN} (无 https 前缀)
         7. ar5iv.labs.arxiv.org/html/{YYMM}.{NNNNN} (无 https 前缀)
+        8. arxiv:YYMM.NNNNN (Zotero 中的 Arxiv 链接格式)
         """
 
-        # 补全无 http 前缀的链接
-        if not arxiv_url.startswith('http'):
-            arxiv_url = 'https://' + arxiv_url
+        # 如果没有 /，则可能是 Zotero 中的 Arxiv 链接格式
+        if '/' not in arxiv_url:
+            # 去除所有多余空格
+            arxiv_url = arxiv_url.replace(' ', '')
+            match = re.search(r'arxiv:(\d{4})\.(\d{5})', arxiv_url)
+            if not match:
+                print("无效的 Arxiv 链接格式")
+                print(supported_formats)
+                return None
 
-        # 正则匹配不同格式的 Arxiv 链接
-        match = re.search(r'https://(?:arxiv\.org|ar5iv\.labs\.arxiv\.org|ar5iv\.org|)/(abs|html|pdf)/(\d{4})\.(\d{5})', arxiv_url)
-        if not match:
-            print("无效的 Arxiv 链接格式")
-            print(supported_formats)
-            return None
+            paper_year = int(match.group(1)[:2]) + 2000
+            paper_month = int(match.group(1)[2:4])
+            arxiv_id = match.group(2)
+            arxiv_url = f"https://arxiv.org/abs/{paper_year}.{arxiv_id}"
 
-        link_type = match.group(1)
-        paper_year = int(match.group(2)[:2]) + 2000  # 转换为完整年份
-        paper_month = int(match.group(2)[2:4])
+        else:
+            # 补全无 http 前缀的链接
+            if not arxiv_url.startswith('http'):
+                arxiv_url = 'https://' + arxiv_url
+
+            # 正则匹配不同格式的 Arxiv 链接
+            match = re.search(r'https://(?:arxiv\.org|ar5iv\.labs\.arxiv\.org|ar5iv\.org|)/(abs|html|pdf)/(\d{4})\.(\d{5})', arxiv_url)
+            if not match:
+                print("无效的 Arxiv 链接格式")
+                print(supported_formats)
+                return None
+
+            link_type = match.group(1)
+            paper_year = int(match.group(2)[:2]) + 2000  # 转换为完整年份
+            paper_month = int(match.group(2)[2:4])
 
         now = datetime.now()
         current_year = now.year
@@ -633,7 +650,7 @@ class MainWindow(QWidget):
         
         # URL 输入框
         self.url_input = QLineEdit()
-        self.url_input.setPlaceholderText("输入URL, 支持输入 arxiv.* / ar5iv.* 等链接, 自动转换为 HTML 格式，按下回车以添加，完成后双击可打开")
+        self.url_input.setPlaceholderText("输入URL, 支持输入 arxiv.* / ar5iv.* 等链接和 arxiv:*.* 格式, 自动转换为 HTML 格式，按下回车以添加，完成后双击可打开")
         self.url_input.returnPressed.connect(self.add_url)  
         url_layout.addWidget(self.url_input, 3)  # 设置较大的拉伸因子
 
