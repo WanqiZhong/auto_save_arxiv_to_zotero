@@ -803,17 +803,14 @@ class MainWindow(QWidget):
 
 
     def setup_global_hotkey(self):
-        self.shortcut = QShortcut(QKeySequence("Alt+Space"), self)
-        self.shortcut.activated.connect(self.toggle_window)
+        self.hotkey_listener = HotkeyListener()
+        self.hotkey_listener.hotkey_pressed.connect(self.toggle_window)
         
-        # self.hotkey_listener = HotkeyListener()
-        # self.hotkey_listener.hotkey_pressed.connect(self.toggle_window)
-        
-        # # 使用 QThread 来运行监听器
-        # self.hotkey_thread = QThread()
-        # self.hotkey_listener.moveToThread(self.hotkey_thread)
-        # self.hotkey_thread.started.connect(self.hotkey_listener.start_listening)
-        # self.hotkey_thread.start()
+        # 使用 QThread 来运行监听器
+        self.hotkey_thread = QThread()
+        self.hotkey_listener.moveToThread(self.hotkey_thread)
+        self.hotkey_thread.started.connect(self.hotkey_listener.start_listening)
+        self.hotkey_thread.start()
 
     def check_accessibility_permissions(self):
         """
