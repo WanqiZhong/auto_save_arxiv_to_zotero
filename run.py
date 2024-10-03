@@ -22,7 +22,7 @@ from PyQt5.QtWidgets import (
     QStyle, QAction, QSystemTrayIcon, QTreeView, QStyledItemDelegate
 )
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QKeySequence, QIcon
-from PyQt5.QtCore import Qt, QObject, pyqtSignal, QThread
+from PyQt5.QtCore import Qt, QObject, pyqtSignal, QThread, QTimer
 
 from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
@@ -633,7 +633,8 @@ class HotkeyListener(QObject):
             self.listener.stop()
 
     def _on_hotkey(self):
-        self.hotkey_pressed.emit()
+        QTimer.singleShot(0, self.hotkey_pressed.emit)
+
 
 class MainWindow(QWidget):
     def __init__(self):
