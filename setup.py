@@ -29,17 +29,17 @@ if is_py2app():
 
     OPTIONS = {
         'argv_emulation': True,
-        'packages': ['PyQt5', 'playwright', 'bs4', 'tqdm', 'pyzotero'],
+        'packages': ['PyQt5', 'playwright', 'bs4', 'tqdm', 'pyzotero', "pyobjc"],
         'iconfile': 'config/icon.png',  # 确保这个路径正确
         'plist': {
             'CFBundleName': 'AutoSaveToZotero',
             'CFBundleShortVersionString': '1.0.0',
             'CFBundleVersion': '1.0.0',
-            'CFBundleIdentifier': 'com.yourcompany.autosavetozotero',
-            'NSHumanReadableCopyright': 'Copyright © 2023 Your Name',
+            'CFBundleIdentifier': 'com.wdaxiwan.AutoSaveToZotero',
+            'NSHumanReadableCopyright': 'Copyright © 2024 Wdaxiwan',
             'NSHighResolutionCapable': True,
         },
-        'includes': ['PyQt5.QtCore', 'PyQt5.QtGui', 'PyQt5.QtWidgets'],
+        'includes': ['PyQt5.QtCore', 'PyQt5.QtGui', 'PyQt5.QtWidgets', 'playwright.sync_api']
     }
 
     setup(
@@ -57,6 +57,7 @@ if is_py2app():
             'beautifulsoup4>=4.11.2',
             'tqdm>=4.66.1',
             'pyzotero>=1.5.25',
+            'pyobjc'
         ],
     )
 else:
@@ -72,5 +73,6 @@ else:
             'beautifulsoup4>=4.11.2',
             'tqdm>=4.66.1',
             'pyzotero>=1.5.25',
+            'pyobjc'
         ],
     )
