@@ -833,34 +833,45 @@ class MainWindow(QWidget):
         if sys.platform != "darwin":
             return
 
-        # 创建一个 NSView 作为我们窗口的内容视图
-        frame = NSMakeRect(0, 0, self.width(), self.height())
-        view = NSView.alloc().initWithFrame_(frame)
+        try:
+            # 获取窗口句柄
+            window = self.windowHandle()
+            if not window:
+                print("Window handle is not available")
+                return
 
-        # 创建 NSVisualEffectView 并设置其属性
-        effect_view = NSVisualEffectView.alloc().initWithFrame_(frame)
-        effect_view.setAutoresizingMask_(18)  # 等同于 NSViewWidthSizable | NSViewHeightSizable
-        effect_view.setBlendingMode_(NSVisualEffectBlendingModeBehindWindow)
-        effect_view.setMaterial_(NSVisualEffectMaterialLight)
-        effect_view.setState_(NSVisualEffectStateActive)
+            # 获取 NSWindow 对象
+            nswindow_ptr = window.winId()
+            
+            # 使用 sip.unwrapinstance 代替 c_void_p
+            nswindow = sip.unwrapinstance(nswindow_ptr)
 
-        # 将 effect_view 添加到 view 中
-        view.addSubview_(effect_view)
+            # 创建 NSView
+            frame = NSMakeRect(0, 0, self.width(), self.height())
+            view = NSView.alloc().initWithFrame_(frame)
 
-        # 获取窗口的 NSWindow 对象
-        window = self.windowHandle()
-        nswindow = window.winId()
-        window = objc.objc_object(c_void_p=nswindow)
+            # 创建 NSVisualEffectView
+            effect_view = NSVisualEffectView.alloc().initWithFrame_(frame)
+            effect_view.setAutoresizingMask_(18)  # NSViewWidthSizable | NSViewHeightSizable
+            effect_view.setBlendingMode_(NSVisualEffectBlendingModeBehindWindow)
+            effect_view.setMaterial_(NSVisualEffectMaterialLight)
+            effect_view.setState_(NSVisualEffectStateActive)
 
-        # 设置窗口的内容视图和样式
-        window.setContentView_(view)
-        window.setStyleMask_(window.styleMask() | NSWindowStyleMaskFullSizeContentView)
-        window.setTitlebarAppearsTransparent_(True)
-        window.setMovableByWindowBackground_(True)
-        window.setBackgroundColor_(NSColor.clearColor())
+            # 添加 effect_view 到 view
+            view.addSubview_(effect_view)
 
-        # 设置圆角
-        window.setCornerRadius_(10.0)
+            # 设置窗口的内容视图和样式
+            nswindow.setContentView_(view)
+            nswindow.setStyleMask_(nswindow.styleMask() | NSWindowStyleMaskFullSizeContentView)
+            nswindow.setTitlebarAppearsTransparent_(True)
+            nswindow.setMovableByWindowBackground_(True)
+            nswindow.setBackgroundColor_(NSColor.clearColor())
+
+            # 设置圆角
+            nswindow.setCornerRadius_(10.0)
+
+        except Exception as e:
+            print(f"Error setting up vibrancy: {e}")
 
 
     def __del__(self):
