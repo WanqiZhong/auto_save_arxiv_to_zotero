@@ -639,7 +639,7 @@ class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Webpage to Zotero Saver")
-        self.resize(1200, 700)
+        self.resize(800, 500)
         self.setStyleSheet("""
             QWidget {
                 font-size: 12px;
@@ -700,10 +700,10 @@ class MainWindow(QWidget):
         # URL Table
         self.table_widget = QTableWidget(0, 4)
         self.table_widget.setHorizontalHeaderLabels(
-        [   "URL".center(80),        
+        [   "URL".center(60),        
             "文献库".center(20),      # 指定总宽度为 20
             "标题/信息", 
-            "进度".center(60)        # 指定总宽度为 30
+            "进度".center(55)        # 指定总宽度为 30
         ])
 
         # 设置每一列的宽比为 3:1:3:3
@@ -781,8 +781,23 @@ class MainWindow(QWidget):
 
     def setup_tray_icon(self):
         self.tray_icon = QSystemTrayIcon(self)
-        self.tray_icon.setIcon(QIcon("config/icon.png"))  
+        self.tray_icon.setIcon(QIcon("config/icon.png"))
         self.tray_icon.setToolTip("Webpage to Zotero Saver")
+        tray_menu = QMenu()
+
+        show_action = QAction("显示", self)
+        show_action.triggered.connect(self.show_window)
+        tray_menu.addAction(show_action)
+
+        hide_action = QAction("隐藏", self)
+        hide_action.triggered.connect(self.hide_window)
+        tray_menu.addAction(hide_action)
+
+        quit_action = QAction("退出", self)
+        quit_action.triggered.connect(QApplication.instance().quit)
+        tray_menu.addAction(quit_action)
+
+        self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.activated.connect(self.on_tray_icon_activated)
         self.tray_icon.show()
 
