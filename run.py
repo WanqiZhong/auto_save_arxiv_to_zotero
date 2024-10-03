@@ -651,7 +651,7 @@ class MainWindow(QWidget):
         super().__init__()
         self.setWindowTitle("Webpage to Zotero Saver")
         self.OPEN_HIEGHT = 500
-        self.CLOSE_HEIGHT = 100
+        self.CLOSE_HEIGHT = 50
         self.resize(600, self.OPEN_HIEGHT)
         self.setStyleSheet("""
             QWidget {
@@ -790,14 +790,12 @@ class MainWindow(QWidget):
             self.hotkey_thread.quit()
             self.hotkey_thread.wait()
 
-    def handle_foreground_hotkey(self):
-        print("前台快捷键被触发")
+    def handle_hotkey(self):
         if self.isActiveWindow():
+            print("前台快捷键被触发")
             self.minimize_window()
-
-    def handle_background_hotkey(self):
-        print("后台快捷键被触发")
-        if not self.isActiveWindow():
+        else:
+            print("后台快捷键被触发")
             self.restore_window()
 
     def minimize_window(self):
@@ -854,7 +852,6 @@ class MainWindow(QWidget):
         
         self.global_filter = GlobalEventFilter()
         QApplication.instance().installEventFilter(self.global_filter)
-        self.global_filter.foreground_hotkey_pressed.connect(self.handle_foreground_hotkey)
 
         self.hotkey_listener = HotkeyListener()
         self.hotkey_listener.background_hotkey_pressed.connect(self.handle_background_hotkey)
