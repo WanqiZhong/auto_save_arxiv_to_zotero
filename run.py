@@ -19,10 +19,13 @@ from PyQt5.QtWidgets import (
     QDialog, QFormLayout, QDialogButtonBox, QSpacerItem,
     QSizePolicy, QComboBox, QShortcut, QTreeWidget, QTreeWidgetItem,
     QMenu, QInputDialog, QFrame, QAbstractItemView, QSplitter, QTextEdit,
-    QStyle, QAction, QSystemTrayIcon, QTreeView, QStyledItemDelegate, QItemDelegate
+    QStyle, QAction, QSystemTrayIcon, QTreeView, QStyledItemDelegate, QItemDelegate,
 )
-from PyQt5.QtGui import QStandardItemModel, QStandardItem, QKeySequence, QIcon
-from PyQt5.QtCore import Qt, QObject, pyqtSignal, QThread, QEvent, QTimer
+from PyQt5.QtGui import (
+    QStandardItemModel, QStandardItem, QKeySequence, 
+    QIcon, QPainter, QPainterPath, QColor, QPen, QFontMetrics, 
+)
+from PyQt5.QtCore import Qt, QObject, pyqtSignal, QThread, QEvent, QTimer, QRect
 
 from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
@@ -33,7 +36,13 @@ from pynput import keyboard
 
 if sys.platform == 'darwin':
     import objc
-    from AppKit import NSWindow, NSFloatingWindowLevel
+    from AppKit import (
+        NSVisualEffectView, NSVisualEffectBlendingModeBehindWindow,
+        NSVisualEffectMaterialLight, NSAppearanceNameVibrantLight,
+        NSWindowStyleMaskFullSizeContentView, NSAppearanceNameVibrantDark,
+        NSVisualEffectStateActive, NSWindow, NSRect, NSView, NSFloatingWindowLevel,
+        NSColor
+    )
     import sip
 
 def resource_path(relative_path):
@@ -832,7 +841,56 @@ class MainWindow(QWidget):
         # Setup Global Hotkey Listener
         self.setup_global_hotkey()
         self.adjustSize()
-        QTimer.singleShot(100, lambda: set_window_always_on_top(self))
+        self.setup_vibrancy()
+
+    def setup_vibrancy(self):
+        # 创建一个 NSView 作为我们窗口的内容视图
+        view = NSView.alloc().initWithFrame_(
+            NSRect(0, 0, self.width(), self.height())
+        )
+
+        # 创建 NSVisualEffectView 并设置其属性
+        effect_view = NSVisualEffectView.alloc().initWithFrame_(
+            NSRect(0, 0, self.width(), self.height())
+        )
+        effect_view.setAutoresizingMask_(0x3F) 
+        effect_view.setBlendingMode_(NSVisualEffectBlendingModeBehindWindow)
+        effect_view.setMaterial_(NSVisualEffectMaterialLight)
+        effect_view.setState_(NSVisualEffectStateActive)
+
+                # 将 effect_view 添加到 view 中
+        view.addSubview_(effect_view)
+
+        # 获取窗口的 NSWindow 对象
+        window = self.windowHandle()
+        nswindow = window.winId().__int__()
+        window = objc.objc_object(c_void_p=nswindow)
+
+        # 设置窗口的内容视图和样式
+        window.setContentView_(view)
+        window.setStyleMask_(window.styleMask() | NSWindowStyleMaskFullSizeContentView)
+        window.setTitlebarAppearsTransparent_(True)
+        window.setMovableByWindowBackground_(True)
+        window.setBackgroundColor_(NSColor.clearColor())
+
+        # 设置圆角
+        window.setCornerRadius_(10.0)
+
+    def paintEvent(self, event):
+        # 绘制圆角
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        
+        # 创建一个圆角矩形路径
+        path = QPainterPath()
+        path.addRoundedRect(QRect(0, 0, self.width(), self.height()), 10, 10)
+        
+        # 设置裁剪区域
+        painter.setClipPath(path)
+        
+        # 如果需要，可以在这里绘制其他内容
+        painter.end()
+
 
 
     def __del__(self):
