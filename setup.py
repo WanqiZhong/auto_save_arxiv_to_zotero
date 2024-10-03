@@ -33,8 +33,8 @@ if is_py2app():
         'iconfile': 'config/icon.png',  # 确保这个路径正确
         'plist': {
             'CFBundleName': 'AutoSaveToZotero',
-            'CFBundleShortVersionString': '1.0.0',
-            'CFBundleVersion': '1.0.0',
+            'CFBundleShortVersionString': '1.1.0',
+            'CFBundleVersion': '1.1.0',
             'CFBundleIdentifier': 'com.wdaxiwan.AutoSaveToZotero',
             'NSHumanReadableCopyright': 'Copyright © 2024 Wdaxiwan',
             'NSHighResolutionCapable': True,
@@ -45,7 +45,7 @@ if is_py2app():
     setup(
         app=APP,
         name='AutoSaveToZotero',
-        version='1.0.0',
+        version='1.1.0',
         packages=find_packages(),
         data_files=DATA_FILES,
         options={'py2app': OPTIONS},
@@ -64,7 +64,7 @@ else:
     # 为 pip 安装配置
     setup(
         name='AutoSaveToZotero',
-        version='1.0.0',
+        version='1.1.0',
         packages=find_packages(),
         install_requires=[
             'requests>=2.25.1',
