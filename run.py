@@ -785,7 +785,7 @@ class MainWindow(QWidget):
         # Setup Global Hotkey Listener
         self.setup_global_hotkey()
 
-        self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
+        self.setWindowFlags(Qt.FramelessWindowHint) 
         self.setMouseTracking(True)
 
     def __del__(self):
