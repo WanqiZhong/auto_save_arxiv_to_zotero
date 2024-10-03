@@ -741,7 +741,7 @@ class MainWindow(QWidget):
                 "进度".center(45)        
             ])
 
-        self.table_widget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.table_widget.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
         self.table_widget.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
         self.table_widget.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
         self.table_widget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
@@ -994,7 +994,7 @@ class MainWindow(QWidget):
             # URL Item
             url_item = QTableWidgetItem(url)
             url_item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
-            url_item.setTextAlignment(Qt.AlignCenter)
+            url_item.setTextAlignment(Qt.AlignCenter | Qt.AlignVCenter)
             self.table_widget.setItem(row_position, 0, url_item)
 
             # Collection Item
