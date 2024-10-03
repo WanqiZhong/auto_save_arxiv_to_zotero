@@ -994,8 +994,7 @@ class MainWindow(QWidget):
             # URL Item
             url_item = QTableWidgetItem(url)
             url_item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
-            # 向右对齐，左侧显示 ...
-            url_item.setTextAlignment(Qt.AlignRight)
+            url_item.setTextAlignment(Qt.AlignCenter)
             self.table_widget.setItem(row_position, 0, url_item)
 
             # Collection Item
