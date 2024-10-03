@@ -767,19 +767,10 @@ class MainWindow(QWidget):
                 subprocess.call(["open", "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"])
 
         # Setup System Tray
-        self.tray_icon = QSystemTrayIcon(self)
-        self.tray_icon.setIcon(QIcon("config/icon.png"))  
-        self.tray_icon.setToolTip("Webpage to Zotero Saver")
-        self.tray_icon.activated.connect(self.on_tray_icon_activated)
-        self.tray_icon.show()
+        self.setup_tray_icon()
 
         # Setup Global Hotkey Listener
-        self.listener = keyboard.GlobalHotKeys({
-            '<alt>+<space>': self.toggle_window
-        })
-        self.listener_thread = threading.Thread(target=self.listener.start)
-        self.listener_thread.daemon = True
-        self.listener_thread.start()
+        self.setup_global_hotkey()
 
     def __del__(self):
         if hasattr(self, 'hotkey_listener'):
@@ -787,6 +778,14 @@ class MainWindow(QWidget):
         if hasattr(self, 'hotkey_thread'):
             self.hotkey_thread.quit()
             self.hotkey_thread.wait()
+
+    def setup_tray_icon(self):
+        self.tray_icon = QSystemTrayIcon(self)
+        self.tray_icon.setIcon(QIcon("config/icon.png"))  
+        self.tray_icon.setToolTip("Webpage to Zotero Saver")
+        self.tray_icon.activated.connect(self.on_tray_icon_activated)
+        self.tray_icon.show()
+
 
     def setup_global_hotkey(self):
         self.hotkey_listener = HotkeyListener()
