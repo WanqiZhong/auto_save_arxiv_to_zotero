@@ -787,7 +787,6 @@ class MainWindow(QWidget):
 
         self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
         self.setMouseTracking(True)
-        self.setSizeGripEnabled(True)
 
     def __del__(self):
         if hasattr(self, 'hotkey_listener'):
