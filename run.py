@@ -650,7 +650,7 @@ class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Webpage to Zotero Saver")
-        self.resize(800, 500)
+        self.resize(600, 500)
         self.setStyleSheet("""
             QWidget {
                 font-size: 12px;
@@ -672,64 +672,61 @@ class MainWindow(QWidget):
         """)
 
         self.layout = QVBoxLayout()
-        self.layout.setSpacing(10)  # 设置统一的间距
-        self.layout.setContentsMargins(10, 10, 10, 10)  # 设置统一的边距
+        self.layout.setSpacing(10)
+        self.layout.setContentsMargins(10, 10, 10, 10)
         self.setLayout(self.layout)
 
-        # 创建水平布局来放置 URL 输入框、添加按钮和文献库选择
+        # 创建 URL 输入和相关按钮的布局
         url_layout = QHBoxLayout()
-        
-        # URL 输入框
         self.url_input = QLineEdit()
-        self.url_input.setPlaceholderText("输入URL, 支持输入 arxiv.* / ar5iv.* 等链接和 arxiv:*.* 格式, 自动转换为 HTML 格式，按下回车以添加，完成后双击可打开")
-        self.url_input.returnPressed.connect(self.add_url)  
-        url_layout.addWidget(self.url_input, 3)  # 设置较大的拉伸因子
+        self.url_input.setPlaceholderText("输入URL...")
+        self.url_input.returnPressed.connect(self.add_url)
+        url_layout.addWidget(self.url_input, 2)
 
-
-        # 显示选中文献库的文本框
         self.selected_collection_input = QLineEdit()
         self.selected_collection_input.setReadOnly(True)
         self.selected_collection_input.setPlaceholderText("未选中")
-        self.selected_collection_input.setMaximumWidth(150)  # 限制最大宽度
-        self.selected_collection_input.returnPressed.connect(self.add_url)
+        self.selected_collection_input.setMaximumWidth(100)
         url_layout.addWidget(self.selected_collection_input)
 
-        # 选择文献库按钮
         self.select_collection_button = QPushButton("选择文献库")
         self.select_collection_button.clicked.connect(self.show_collection_dialog)
         url_layout.addWidget(self.select_collection_button)
 
-
-        # 添加 URL 按钮
-        self.add_url_button = QPushButton(" 添加（Enter）")
+        self.add_url_button = QPushButton("↵")
         self.add_url_button.clicked.connect(self.add_url)
         url_layout.addWidget(self.add_url_button)
 
-        # 将水平布局添加到主布局中
         self.layout.addLayout(url_layout)
 
-        # URL Table
+        # 创建收起/展开按钮
+        self.toggle_button = QPushButton("▲")
+        self.toggle_button.setCheckable(True)
+        self.toggle_button.clicked.connect(self.toggle_lower_section)
+        self.layout.addWidget(self.toggle_button)
+
+        # 创建一个容器 QWidget 来包裹表格和控制按钮
+        self.lower_container = QWidget()
+        self.lower_layout = QVBoxLayout()
+        self.lower_container.setLayout(self.lower_layout)
+
+        # 创建 URL Table
         self.table_widget = QTableWidget(0, 4)
         self.table_widget.setHorizontalHeaderLabels(
-        [   "URL".center(60),        
-            "文献库".center(20),      # 指定总宽度为 20
-            "标题/信息", 
-            "进度".center(55)        # 指定总宽度为 30
-        ])
+            [   
+                "URL".center(60),        
+                "文献库".center(20),
+                "标题/信息", 
+                "进度".center(55)        
+            ])
 
-        # 设置每一列的宽比为 3:1:3:3
         self.table_widget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
         self.table_widget.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
         self.table_widget.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
         self.table_widget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
 
         self.table_widget.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.layout.addWidget(self.table_widget)
-
-        self.delete_shortcut = QShortcut(QKeySequence(Qt.Key_Backspace), self.table_widget)
-        self.delete_shortcut.activated.connect(self.delete_selected_row)
-        self.table_widget.cellDoubleClicked.connect(self.open_saved_html)
-
+        self.lower_layout.addWidget(self.table_widget)
 
         # Control Buttons
         self.control_layout = QHBoxLayout()
@@ -746,7 +743,9 @@ class MainWindow(QWidget):
         self.control_layout.addWidget(self.start_button)
         self.control_layout.addWidget(self.clear_button)
         self.control_layout.addWidget(self.config_button)
-        self.layout.addLayout(self.control_layout)
+        self.lower_layout.addLayout(self.control_layout)
+
+        self.layout.addWidget(self.lower_container)
 
         # Initialize configuration
         self.args = self.load_config()
@@ -796,6 +795,14 @@ class MainWindow(QWidget):
         if hasattr(self, 'hotkey_thread'):
             self.hotkey_thread.quit()
             self.hotkey_thread.wait()
+    
+    def toggle_lower_section(self):
+        if self.toggle_button.isChecked():
+            self.lower_container.hide()
+            self.toggle_button.setText("▼")
+        else:
+            self.lower_container.show()
+            self.toggle_button.setText("▲")
 
     def setup_tray_icon(self):
         self.tray_icon = QSystemTrayIcon(self)
