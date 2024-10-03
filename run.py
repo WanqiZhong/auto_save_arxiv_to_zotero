@@ -19,7 +19,7 @@ from PyQt5.QtWidgets import (
     QDialog, QFormLayout, QDialogButtonBox, QSpacerItem,
     QSizePolicy, QComboBox, QShortcut, QTreeWidget, QTreeWidgetItem,
     QMenu, QInputDialog, QFrame, QAbstractItemView, QSplitter, QTextEdit,
-    QStyle, QAction, QSystemTrayIcon, QTreeView, QStyledItemDelegate
+    QStyle, QAction, QSystemTrayIcon, QTreeView, QStyledItemDelegate, QItemDelegate
 )
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QKeySequence, QIcon
 from PyQt5.QtCore import Qt, QObject, pyqtSignal, QThread, QEvent, QTimer
