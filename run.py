@@ -717,10 +717,10 @@ class MainWindow(QWidget):
         self.table_widget = QTableWidget(0, 4)
         self.table_widget.setHorizontalHeaderLabels(
             [   
-                "URL".center(60),        
-                "文献库".center(20),
-                "标题/信息", 
-                "进度".center(55)        
+                "URL".center(30),        
+                "文献库".center(10),
+                "标题/信息".center(45), 
+                "进度".center(45)        
             ])
 
         self.table_widget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
@@ -785,6 +785,10 @@ class MainWindow(QWidget):
         # Setup Global Hotkey Listener
         self.setup_global_hotkey()
 
+        self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
+        self.setMouseTracking(True)
+        self.setSizeGripEnabled(True)
+
     def __del__(self):
         if hasattr(self, 'hotkey_listener'):
             self.hotkey_listener.stop_listening()
@@ -798,14 +802,12 @@ class MainWindow(QWidget):
     def handle_foreground_hotkey(self):
         if not self.is_handling_hotkey and self.isActiveWindow():
             self.is_handling_hotkey = True
-            print("前台快捷键被触发")
             self.minimize_window()
             QTimer.singleShot(100, self.reset_handling_flag)
 
     def handle_background_hotkey(self):
         if not self.is_handling_hotkey and not self.isActiveWindow():
             self.is_handling_hotkey = True
-            print("后台快捷键被触发")
             self.restore_window()
             QTimer.singleShot(100, self.reset_handling_flag)
 
@@ -830,7 +832,7 @@ class MainWindow(QWidget):
         if self.toggle_button.isChecked():
             self.lower_container.hide()
             self.toggle_button.setText("▼")
-            self.resize(self.width(), self.CLOSE_HEIGHT)
+            self.resize(self.width(), self.url_input.height() + 20)  
         else:
             self.lower_container.show()
             self.toggle_button.setText("▲")
