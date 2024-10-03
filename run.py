@@ -31,8 +31,14 @@ from pyzotero import zotero
 
 from pynput import keyboard
 
+def resource_path(relative_path):
+    if getattr(sys, 'frozen', False):
+        base_path = os.path.join(os.path.dirname(sys.executable), 'Resources')
+    else:
+        base_path = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(base_path, relative_path)
 
-CONFIG_FILE = 'config/config.json'
+CONFIG_FILE = resource_path('config/config.json')
 
 # --- Worker Signals ---
 class WorkerSignals(QObject):
@@ -139,22 +145,22 @@ class SavePageWorker:
             self.signals.progress.emit(self.row, 2)  # Stage 2
             with sync_playwright() as p:
                 # Launch browser and load extension if needed
-                if not os.path.exists(self.args['user_data_dir']):
-                    raise Exception(f"无法找到用户数据目录: {self.args['user_data_dir']}")
+                if not os.path.exists(resource_path(self.args['user_data_dir'])):
+                    raise Exception(f"无法找到用户数据目录: {resource_path(self.args['user_data_dir'])}")
 
-                if not os.path.exists(self.args['extension_path']):
-                    raise Exception(f"无法找到扩展目录: {self.args['extension_path']}")
+                if not os.path.exists(resource_path(self.args['extension_path'])):
+                    raise Exception(f"无法找到扩展目录: {resource_path(self.args['extension_path'])}")
                 
                 if not os.path.exists(self.args['zotero_storage']):
                     raise Exception(f"无法找到 Zotero 存储目录: {self.args['zotero_storage']}")
 
                 browser_context = p.chromium.launch_persistent_context(
-                    user_data_dir=self.args['user_data_dir'],
+                    user_data_dir=resource_path(self.args['user_data_dir']),
                     headless=False,
                     args=[
                         "--headless=new",
-                        f'--disable-extensions-except={self.args["extension_path"]}',
-                        f'--load-extension={self.args["extension_path"]}',
+                        f'--disable-extensions-except={resource_path(self.args["extension_path"])}',
+                        f'--load-extension={resource_path(self.args["extension_path"])}',
                     ],
                 )
 
@@ -499,11 +505,11 @@ class ConfigDialog(QDialog):
             return
             
         if not os.path.exists(new_config['user_data_dir']):
-            QMessageBox.critical(self, "配置错误", f"无法找到用户数据目录: {new_config['user_data_dir']}")
+            QMessageBox.critical(self, "配置错误", f"无法找到用户数据目录: {resource_path(new_config['user_data_dir'])}")
             return 
         
         if not os.path.exists(new_config['extension_path']):
-            QMessageBox.critical(self, "配置错误", f"无法找到扩展目录: {new_config['extension_path']}")
+            QMessageBox.critical(self, "配置错误", f"无法找到扩展目录: {resource_path(new_config['extension_path'])}")
             return
         
         if not os.path.exists(new_config['output_dir']):
@@ -1108,8 +1114,8 @@ class MainWindow(QWidget):
                 "library_id": "访问这里以获得ID https://www.zotero.org/settings/security#applications",
                 "api_key": "访问这里以创建API https://www.zotero.org/settings/security#applications",
                 "library_type": "user",
-                "user_data_dir": "config/user_data",
-                "extension_path": "config/extension",
+                "user_data_dir": resource_path('config/user_data'),
+                "extension_path": resource_path('config/extension'),
                 "output_dir": "download",
                 "last_used_collection_key": "",
                 "last_used_collection_name": ""
