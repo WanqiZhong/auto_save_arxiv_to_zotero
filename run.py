@@ -10,6 +10,7 @@ from datetime import datetime
 from urllib.parse import urljoin
 from concurrent.futures import ThreadPoolExecutor
 import threading
+import subprocess
 
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QHBoxLayout,
@@ -21,7 +22,7 @@ from PyQt5.QtWidgets import (
     QStyle, QAction, QSystemTrayIcon, QTreeView, QStyledItemDelegate
 )
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QKeySequence, QIcon
-from PyQt5.QtCore import Qt, QObject, pyqtSignal
+from PyQt5.QtCore import Qt, QObject, pyqtSignal, QThread
 
 from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
@@ -614,6 +615,26 @@ class UrlItemWidget(QWidget):
         layout.addWidget(self.collection_button)
         layout.setContentsMargins(0, 0, 0, 0)
 
+class HotkeyListener(QObject):
+    hotkey_pressed = pyqtSignal()
+
+    def __init__(self):
+        super().__init__()
+        self.listener = None
+
+    def start_listening(self):
+        self.listener = keyboard.GlobalHotKeys({
+            '<alt>+<space>': self._on_hotkey
+        })
+        self.listener.start()
+
+    def stop_listening(self):
+        if self.listener:
+            self.listener.stop()
+
+    def _on_hotkey(self):
+        self.hotkey_pressed.emit()
+
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
@@ -723,7 +744,7 @@ class MainWindow(QWidget):
         # Thread Pool Executor
         self.executor = ThreadPoolExecutor(max_workers=1)
         self.tasks = []
-        self.row_tasks = {}  # 用于跟踪每行的任务
+        self.row_event = {}  # 用于跟踪每行的任务
 
         # Load Zotero collections
         self.load_zotero_collections()
@@ -734,25 +755,21 @@ class MainWindow(QWidget):
         self.current_collection_name = self.args.get('last_used_collection_name', '')
         self.update_collection_display()
 
+        if not self.check_accessibility_permissions():
+            reply = QMessageBox.question(
+                self,
+                "权限不足",
+                "程序需要辅助功能权限才能监听全局快捷键。\n"
+                "是否前往系统偏好设置授予权限？",
+                QMessageBox.Yes | QMessageBox.No
+            )
+            if reply == QMessageBox.Yes:
+                subprocess.call(["open", "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"])
+
         # Setup System Tray
         self.tray_icon = QSystemTrayIcon(self)
         self.tray_icon.setIcon(QIcon("config/icon.png"))  
         self.tray_icon.setToolTip("Webpage to Zotero Saver")
-        tray_menu = QMenu()
-
-        show_action = QAction("显示", self)
-        show_action.triggered.connect(self.show_window)
-        tray_menu.addAction(show_action)
-
-        hide_action = QAction("隐藏", self)
-        hide_action.triggered.connect(self.hide_window)
-        tray_menu.addAction(hide_action)
-
-        quit_action = QAction("退出", self)
-        quit_action.triggered.connect(QApplication.instance().quit)
-        tray_menu.addAction(quit_action)
-
-        self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.activated.connect(self.on_tray_icon_activated)
         self.tray_icon.show()
 
@@ -764,8 +781,44 @@ class MainWindow(QWidget):
         self.listener_thread.daemon = True
         self.listener_thread.start()
 
+    def __del__(self):
+        if hasattr(self, 'hotkey_listener'):
+            self.hotkey_listener.stop_listening()
+        if hasattr(self, 'hotkey_thread'):
+            self.hotkey_thread.quit()
+            self.hotkey_thread.wait()
+
+    def setup_global_hotkey(self):
+        self.hotkey_listener = HotkeyListener()
+        self.hotkey_listener.hotkey_pressed.connect(self.toggle_window)
+        
+        # 使用 QThread 来运行监听器
+        self.hotkey_thread = QThread()
+        self.hotkey_listener.moveToThread(self.hotkey_thread)
+        self.hotkey_thread.started.connect(self.hotkey_listener.start_listening)
+        self.hotkey_thread.start()
+
+    def check_accessibility_permissions(self):
+        """
+        检查当前应用是否已被授予辅助功能权限。
+        通过尝试执行一个需要权限的命令来判断。
+        """
+        try:
+            # 在 macOS 上，可以使用 AppleScript 检查权限
+            script = '''
+            tell application "System Events"
+                set isEnabled to UI elements enabled
+            end tell
+            return isEnabled
+            '''
+            result = subprocess.run(['osascript', '-e', script], capture_output=True, text=True)
+            return result.stdout.strip() == "true"
+        except Exception as e:
+            print(f"权限检查失败: {e}")
+            return False
+
     def on_tray_icon_activated(self, reason):
-        if reason == QSystemTrayIcon.Trigger:
+        if reason == QSystemTrayIcon.DoubleClick:
             self.toggle_window()
 
     def show_window(self):
@@ -889,13 +942,15 @@ class MainWindow(QWidget):
             self.table_widget.setCellWidget(row_position, 3, progress_bar)
             self.url_input.clear()
 
+            self.start_saving()
+
     def start_saving(self):
         if self.table_widget.rowCount() == 0:
             QMessageBox.warning(self, "没有 URL", "请添加至少一个 URL 以保存。")
             return
 
         for row in range(self.table_widget.rowCount()):
-            if row in self.row_tasks:
+            if row in self.row_event:
                 continue  # 跳过已经在执行的任务
 
             url = self.table_widget.item(row, 0).text()
@@ -919,7 +974,7 @@ class MainWindow(QWidget):
             # Create and submit worker
             worker = SavePageWorker(row, url, {**self.args, 'collection_key': collection_key}, signals, cancel_event)
             self.executor.submit(worker.run)
-            self.row_tasks[row] = cancel_event
+            self.row_event[row] = cancel_event
 
 
 
@@ -997,30 +1052,30 @@ class MainWindow(QWidget):
                 sys.exit(1)
 
     def clear_all(self):
-        for row in self.row_tasks.values():
+        for row in self.row_event.values():
             row.set()
             del row
-        self.row_tasks.clear()
+        self.row_event.clear()
         self.table_widget.setRowCount(0)
 
     def delete_selected_row(self):
         current_row = self.table_widget.currentRow()
         if current_row != -1:
-            if current_row in self.row_tasks:
-                cancel_event = self.row_tasks[current_row]
+            if current_row in self.row_event:
+                cancel_event = self.row_event[current_row]
                 cancel_event.set()
-                del self.row_tasks[current_row]
+                del self.row_event[current_row]
             self.table_widget.removeRow(current_row)
             self.update_row_numbers()
             self.update_row_task_indices()
 
     def update_row_task_indices(self):
-        new_row_tasks = {}
-        for old_row, task in self.row_tasks.items():
+        new_row_event = {}
+        for old_row, cancel_event in self.row_event.items():
             new_row = self.find_new_row_index(old_row)
             if new_row is not None:
-                new_row_tasks[new_row] = task
-        self.row_tasks = new_row_tasks
+                new_row_event[new_row] = cancel_event
+        self.row_event = new_row_event
 
     def find_new_row_index(self, old_row):
         for row in range(self.table_widget.rowCount()):
