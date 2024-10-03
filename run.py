@@ -22,7 +22,7 @@ from PyQt5.QtWidgets import (
     QStyle, QAction, QSystemTrayIcon, QTreeView, QStyledItemDelegate
 )
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QKeySequence, QIcon
-from PyQt5.QtCore import Qt, QObject, pyqtSignal, QThread
+from PyQt5.QtCore import Qt, QObject, pyqtSignal, QThread, QEvent
 
 from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
@@ -30,6 +30,7 @@ from tqdm import tqdm
 from pyzotero import zotero
 
 from pynput import keyboard
+
 
 CONFIG_FILE = 'config/config.json'
 
@@ -635,6 +636,16 @@ class HotkeyListener(QObject):
     def _on_hotkey(self):
         self.hotkey_pressed.emit()
 
+class GlobalEventFilter(QObject):
+    alt_space_pressed = pyqtSignal()
+
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.KeyPress:
+            if event.key() == Qt.Key_Space and event.modifiers() == Qt.AltModifier:
+                self.alt_space_pressed.emit()
+                return True
+        return super().eventFilter(obj, event)
+
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
@@ -770,6 +781,13 @@ class MainWindow(QWidget):
         self.setup_tray_icon()
 
         # Setup Global Hotkey Listener
+        self.shortcut = QShortcut(QKeySequence("Alt+Space"), self)
+        self.shortcut.activated.connect(self.toggle_window)
+
+        # 设置全局事件过滤器
+        self.global_filter = GlobalEventFilter()
+        QApplication.instance().installEventFilter(self.global_filter)
+        self.global_filter.alt_space_pressed.connect(self.toggle_window)
         self.setup_global_hotkey()
 
     def __del__(self):
@@ -844,7 +862,7 @@ class MainWindow(QWidget):
         self.hide()
 
     def toggle_window(self):
-        if self.isVisible():
+        if self.isVisible() and self.isActiveWindow():
             self.hide()
         else:
             self.show_window()
