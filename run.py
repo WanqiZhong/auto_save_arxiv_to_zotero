@@ -650,11 +650,7 @@ class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Webpage to Zotero Saver")
-        self.OPEN_HIEGHT = 500
-        self.CLOSE_HEIGHT = 50
         self.is_handling_hotkey = False
-
-        self.resize(600, self.OPEN_HIEGHT)
         self.setStyleSheet("""
             QWidget {
                 font-size: 12px;
@@ -685,15 +681,15 @@ class MainWindow(QWidget):
         self.url_input = QLineEdit()
         self.url_input.setPlaceholderText("输入URL...")
         self.url_input.returnPressed.connect(self.add_url)
-        url_layout.addWidget(self.url_input, 2)
+        url_layout.addWidget(self.url_input, 3)
 
         self.selected_collection_input = QLineEdit()
         self.selected_collection_input.setReadOnly(True)
         self.selected_collection_input.setPlaceholderText("未选中")
-        self.selected_collection_input.setMaximumWidth(100)
+        self.selected_collection_input.setMaximumWidth(80)
         url_layout.addWidget(self.selected_collection_input)
 
-        self.select_collection_button = QPushButton("选择文献库")
+        self.select_collection_button = QPushButton("选择")
         self.select_collection_button.clicked.connect(self.show_collection_dialog)
         url_layout.addWidget(self.select_collection_button)
 
@@ -784,6 +780,7 @@ class MainWindow(QWidget):
 
         # Setup Global Hotkey Listener
         self.setup_global_hotkey()
+        self.adjustSize()
 
     def __del__(self):
         if hasattr(self, 'hotkey_listener'):
