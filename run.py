@@ -646,6 +646,28 @@ class HotkeyListener(QObject):
     def _on_hotkey(self):
         self.background_hotkey_pressed.emit()
 
+class URLDelegate(QItemDelegate):
+    def paint(self, painter, option, index):
+        if index.column() == 0:  # Assuming URL is in the first column
+            text = index.data()
+            width = option.rect.width()
+            metrics = painter.fontMetrics()
+            
+            # Determine how many characters can fit
+            ellipsis = '...'
+            available_width = width - metrics.width(ellipsis) - 5  # 5 pixels for padding
+            
+            if metrics.width(text) > available_width:
+                # If text is too long, show only the end part
+                visible_text = text
+                while metrics.width(visible_text) > available_width and len(visible_text) > 0:
+                    visible_text = visible_text[1:]
+                text = ellipsis + visible_text
+            
+            # Draw the text
+            painter.drawText(option.rect, Qt.AlignLeft | Qt.AlignVCenter, text)
+        else:
+            super().paint(painter, option, index)
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
@@ -726,6 +748,9 @@ class MainWindow(QWidget):
 
         self.table_widget.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.lower_layout.addWidget(self.table_widget)
+
+        url_delegate = URLDelegate(self.table_widget)
+        self.table_widget.setItemDelegateForColumn(0, url_delegate)
 
         # Control Buttons
         self.control_layout = QHBoxLayout()
