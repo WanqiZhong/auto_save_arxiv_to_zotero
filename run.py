@@ -18,18 +18,17 @@ from PyQt5.QtWidgets import (
     QDialog, QFormLayout, QDialogButtonBox, QSpacerItem,
     QSizePolicy, QComboBox, QShortcut, QTreeWidget, QTreeWidgetItem,
     QMenu, QInputDialog, QFrame, QAbstractItemView, QSplitter, QTextEdit,
-    QStyle
+    QStyle, QAction, QSystemTrayIcon, QTreeView, QStyledItemDelegate
 )
-from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QTreeWidget, 
-                             QTreeWidgetItem, QPushButton, QDialogButtonBox, 
-                             QTreeView, QStyledItemDelegate)
-from PyQt5.QtGui import QStandardItemModel, QStandardItem, QKeySequence
+from PyQt5.QtGui import QStandardItemModel, QStandardItem, QKeySequence, QIcon
 from PyQt5.QtCore import Qt, QObject, pyqtSignal
 
 from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 from pyzotero import zotero
+
+from pynput import keyboard
 
 CONFIG_FILE = 'config/config.json'
 
@@ -735,6 +734,64 @@ class MainWindow(QWidget):
         self.current_collection_name = self.args.get('last_used_collection_name', '')
         self.update_collection_display()
 
+        # Setup System Tray
+        self.tray_icon = QSystemTrayIcon(self)
+        self.tray_icon.setIcon(QIcon("config/icon.png"))  
+        self.tray_icon.setToolTip("Webpage to Zotero Saver")
+        tray_menu = QMenu()
+
+        show_action = QAction("显示", self)
+        show_action.triggered.connect(self.show_window)
+        tray_menu.addAction(show_action)
+
+        hide_action = QAction("隐藏", self)
+        hide_action.triggered.connect(self.hide_window)
+        tray_menu.addAction(hide_action)
+
+        quit_action = QAction("退出", self)
+        quit_action.triggered.connect(QApplication.instance().quit)
+        tray_menu.addAction(quit_action)
+
+        self.tray_icon.setContextMenu(tray_menu)
+        self.tray_icon.activated.connect(self.on_tray_icon_activated)
+        self.tray_icon.show()
+
+        # Setup Global Hotkey Listener
+        self.listener = keyboard.GlobalHotKeys({
+            '<alt>+<space>': self.toggle_window
+        })
+        self.listener_thread = threading.Thread(target=self.listener.start)
+        self.listener_thread.daemon = True
+        self.listener_thread.start()
+
+    def on_tray_icon_activated(self, reason):
+        if reason == QSystemTrayIcon.Trigger:
+            self.toggle_window()
+
+    def show_window(self):
+        self.show()
+        self.raise_()
+        self.activateWindow()
+
+    def hide_window(self):
+        self.hide()
+
+    def toggle_window(self):
+        if self.isVisible():
+            self.hide()
+        else:
+            self.show_window()
+
+    def closeEvent(self, event):
+        event.ignore()
+        self.hide_window()
+        self.tray_icon.showMessage(
+            "Webpage to Zotero Saver",
+            "程序已最小化到托盘。双击托盘图标或使用快捷键唤起。",
+            QSystemTrayIcon.Information,
+            2000
+        )
+
     def open_saved_html(self):
         row = self.table_widget.currentRow()
         if row >= 0:
@@ -1020,6 +1077,7 @@ class MainWindow(QWidget):
 # --- Main Entry Point ---
 def main():
     app = QApplication(sys.argv)
+    app.setQuitOnLastWindowClosed(False)  # 确保程序在托盘图标存在时不会完全退出
     window = MainWindow()
     window.show()
     sys.exit(app.exec_())
