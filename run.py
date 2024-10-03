@@ -32,8 +32,9 @@ from pyzotero import zotero
 from pynput import keyboard
 
 if sys.platform == 'darwin':
-    from AppKit import NSApp, NSApplication, NSWindow, NSApplicationActivationPolicyAccessory
     import objc
+    from AppKit import NSWindow, NSFloatingWindowLevel
+    import sip
 
 def resource_path(relative_path):
     if getattr(sys, 'frozen', False):
@@ -43,6 +44,19 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 CONFIG_FILE = resource_path('config/config.json')
+
+def set_window_always_on_top(widget):
+    if sys.platform != 'darwin':
+        return  
+
+    window = widget.windowHandle()
+    if window is None:
+        return
+
+    nswindow_ptr = window.winId()
+    nswindow = sip.wrapinstance(int(nswindow_ptr), objc.objc_class('NSWindow'))
+
+    nswindow.setLevel_(NSFloatingWindowLevel)
 
 # --- Worker Signals ---
 class WorkerSignals(QObject):
@@ -832,6 +846,8 @@ class MainWindow(QWidget):
         # Setup Global Hotkey Listener
         self.setup_global_hotkey()
         self.adjustSize()
+        QTimer.singleShot(100, lambda: set_window_always_on_top(self))
+
 
     def __del__(self):
         if hasattr(self, 'hotkey_listener'):
@@ -1238,7 +1254,9 @@ def main():
     app = QApplication(sys.argv)
     
     if sys.platform == 'darwin':
-        NSApp.setActivationPolicy_(NSApplicationActivationPolicyAccessory)
+        from AppKit import NSApp, NSApplicationActivationPolicyRegular
+        NSApp.setActivationPolicy_(NSApplicationActivationPolicyRegular)
+    
     
     app.setQuitOnLastWindowClosed(False) 
     window = MainWindow()
