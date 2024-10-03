@@ -35,7 +35,8 @@ from pyzotero import zotero
 from pynput import keyboard
 
 if sys.platform == 'darwin':
-    import objc
+    import objc, sip
+    from Foundation import NSMakeRect
     from AppKit import (
         NSVisualEffectView, NSVisualEffectBlendingModeBehindWindow,
         NSVisualEffectMaterialLight, NSAppearanceNameVibrantLight,
@@ -43,7 +44,6 @@ if sys.platform == 'darwin':
         NSVisualEffectStateActive, NSWindow, NSRect, NSView, NSFloatingWindowLevel,
         NSColor
     )
-    import sip
 
 def resource_path(relative_path):
     if getattr(sys, 'frozen', False):
@@ -63,7 +63,9 @@ def set_window_always_on_top(widget):
         return
 
     nswindow_ptr = window.winId()
-    nswindow = sip.wrapinstance(int(nswindow_ptr), objc.objc_class('NSWindow'))
+    NSWindowClass = objc.lookUpClass('NSWindow')
+    nswindow = sip.wrapinstance(int(nswindow_ptr), NSWindowClass)
+
 
     nswindow.setLevel_(NSFloatingWindowLevel)
 
@@ -844,26 +846,26 @@ class MainWindow(QWidget):
         self.setup_vibrancy()
 
     def setup_vibrancy(self):
+        if sys.platform != "darwin":
+            return
+
         # 创建一个 NSView 作为我们窗口的内容视图
-        view = NSView.alloc().initWithFrame_(
-            NSRect(0, 0, self.width(), self.height())
-        )
+        frame = NSMakeRect(0, 0, self.width(), self.height())
+        view = NSView.alloc().initWithFrame_(frame)
 
         # 创建 NSVisualEffectView 并设置其属性
-        effect_view = NSVisualEffectView.alloc().initWithFrame_(
-            NSRect(0, 0, self.width(), self.height())
-        )
-        effect_view.setAutoresizingMask_(0x3F) 
+        effect_view = NSVisualEffectView.alloc().initWithFrame_(frame)
+        effect_view.setAutoresizingMask_(18)  # 等同于 NSViewWidthSizable | NSViewHeightSizable
         effect_view.setBlendingMode_(NSVisualEffectBlendingModeBehindWindow)
         effect_view.setMaterial_(NSVisualEffectMaterialLight)
         effect_view.setState_(NSVisualEffectStateActive)
 
-                # 将 effect_view 添加到 view 中
+        # 将 effect_view 添加到 view 中
         view.addSubview_(effect_view)
 
         # 获取窗口的 NSWindow 对象
         window = self.windowHandle()
-        nswindow = window.winId().__int__()
+        nswindow = window.winId()
         window = objc.objc_object(c_void_p=nswindow)
 
         # 设置窗口的内容视图和样式
@@ -875,22 +877,6 @@ class MainWindow(QWidget):
 
         # 设置圆角
         window.setCornerRadius_(10.0)
-
-    def paintEvent(self, event):
-        # 绘制圆角
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing)
-        
-        # 创建一个圆角矩形路径
-        path = QPainterPath()
-        path.addRoundedRect(QRect(0, 0, self.width(), self.height()), 10, 10)
-        
-        # 设置裁剪区域
-        painter.setClipPath(path)
-        
-        # 如果需要，可以在这里绘制其他内容
-        painter.end()
-
 
 
     def __del__(self):
