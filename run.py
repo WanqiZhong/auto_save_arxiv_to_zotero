@@ -719,20 +719,6 @@ class MainWindow(QWidget):
 
         self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.Tool)
 
-        if sys.platform == 'darwin':
-            # 获取窗口的 NSWindow 对象
-            window = self.windowHandle()
-            ns_window = window.winId()
-
-            # 设置窗口层级为浮动
-            ns_window.setLevel_(NSWindow.FloatingWindowLevel)
-
-            # 设置窗口在所有空间可见
-            ns_window.setCollectionBehavior_(
-                NSWindow.CollectionBehaviorCanJoinAllSpaces |
-                NSWindow.CollectionBehaviorFullScreenAuxiliary
-            )
-
         self.layout = QVBoxLayout()
         self.layout.setSpacing(10)
         self.layout.setContentsMargins(10, 10, 10, 10)
