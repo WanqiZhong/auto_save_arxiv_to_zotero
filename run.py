@@ -650,7 +650,9 @@ class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Webpage to Zotero Saver")
-        self.resize(600, 500)
+        self.OPEN_HIEGHT = 500
+        self.CLOSE_HEIGHT = 100
+        self.resize(600, self.OPEN_HIEGHT)
         self.setStyleSheet("""
             QWidget {
                 font-size: 12px;
@@ -697,13 +699,12 @@ class MainWindow(QWidget):
         self.add_url_button.clicked.connect(self.add_url)
         url_layout.addWidget(self.add_url_button)
 
-        self.layout.addLayout(url_layout)
-
-        # 创建收起/展开按钮
         self.toggle_button = QPushButton("▲")
         self.toggle_button.setCheckable(True)
         self.toggle_button.clicked.connect(self.toggle_lower_section)
-        self.layout.addWidget(self.toggle_button)
+        url_layout.addWidget(self.toggle_button)
+
+        self.layout.addLayout(url_layout)
 
         # 创建一个容器 QWidget 来包裹表格和控制按钮
         self.lower_container = QWidget()
@@ -781,7 +782,6 @@ class MainWindow(QWidget):
 
         # Setup Global Hotkey Listener
         self.setup_global_hotkey()
-        self.is_minimized = False
 
     def __del__(self):
         if hasattr(self, 'hotkey_listener'):
@@ -801,15 +801,16 @@ class MainWindow(QWidget):
             self.restore_window()
 
     def minimize_window(self):
-        self.is_minimized = True
         self.hide()
+        QApplication.processEvents()  # 确保事件循环及时处理
+        # 发送系统级事件以将焦点从当前应用移除
+        QApp = QApplication.instance()
+        QApp.setActiveWindow(None)
 
     def restore_window(self):
-        if self.is_minimized:
-            self.show()
-            self.raise_()
-            self.activateWindow()
-            self.is_minimized = False
+        self.show()
+        self.raise_()
+        self.activateWindow()
 
     def closeEvent(self, event):
         event.ignore()
@@ -820,9 +821,11 @@ class MainWindow(QWidget):
         if self.toggle_button.isChecked():
             self.lower_container.hide()
             self.toggle_button.setText("▼")
+            self.resize(self.width(), self.CLOSE_HEIGHT)
         else:
             self.lower_container.show()
             self.toggle_button.setText("▲")
+            self.resize(self.width(), self.OPEN_HIEGHT)
 
     def setup_tray_icon(self):
         self.tray_icon = QSystemTrayIcon(self)
