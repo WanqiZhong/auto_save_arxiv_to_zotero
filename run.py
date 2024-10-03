@@ -854,7 +854,7 @@ class MainWindow(QWidget):
         QApplication.instance().installEventFilter(self.global_filter)
 
         self.hotkey_listener = HotkeyListener()
-        self.hotkey_listener.background_hotkey_pressed.connect(self.handle_background_hotkey)
+        self.hotkey_listener.background_hotkey_pressed.connect(self.handle_hotkey)
         
         self.hotkey_thread = QThread()
         self.hotkey_listener.moveToThread(self.hotkey_thread)
