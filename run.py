@@ -31,6 +31,9 @@ from pyzotero import zotero
 
 from pynput import keyboard
 
+if sys.platform == 'darwin':
+    from AppKit import NSApp, NSApplication, NSApplicationActivationPolicyAccessory
+
 def resource_path(relative_path):
     if getattr(sys, 'frozen', False):
         base_path = os.path.join(os.path.dirname(sys.executable), 'Resources')
@@ -1216,6 +1219,10 @@ class MainWindow(QWidget):
 # --- Main Entry Point ---
 def main():
     app = QApplication(sys.argv)
+    
+    if sys.platform == 'darwin':
+        NSApp.setActivationPolicy_(NSApplicationActivationPolicyAccessory)
+    
     app.setQuitOnLastWindowClosed(False) 
     window = MainWindow()
     window.show()
