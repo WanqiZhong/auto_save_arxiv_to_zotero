@@ -713,7 +713,7 @@ class MainWindow(QWidget):
         self.table_widget = QTableWidget(0, 4)
         self.table_widget.setHorizontalHeaderLabels(
             [   
-                "URL".center(30),        
+                "URL".center(10),        
                 "文献库".center(10),
                 "标题/信息".center(45), 
                 "进度".center(45)        
@@ -969,7 +969,8 @@ class MainWindow(QWidget):
             # URL Item
             url_item = QTableWidgetItem(url)
             url_item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
-            url_item.setTextAlignment(Qt.AlignCenter)
+            # 向右对齐，左侧显示 ...
+            url_item.setTextAlignment(Qt.AlignRight)
             self.table_widget.setItem(row_position, 0, url_item)
 
             # Collection Item
