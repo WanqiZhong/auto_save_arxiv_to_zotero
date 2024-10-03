@@ -22,7 +22,7 @@ from PyQt5.QtWidgets import (
     QStyle, QAction, QSystemTrayIcon, QTreeView, QStyledItemDelegate
 )
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QKeySequence, QIcon
-from PyQt5.QtCore import Qt, QObject, pyqtSignal, QThread, QEvent
+from PyQt5.QtCore import Qt, QObject, pyqtSignal, QThread, QEvent, QTimer
 
 from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
@@ -652,6 +652,8 @@ class MainWindow(QWidget):
         self.setWindowTitle("Webpage to Zotero Saver")
         self.OPEN_HIEGHT = 500
         self.CLOSE_HEIGHT = 50
+        self.is_handling_hotkey = False
+
         self.resize(600, self.OPEN_HIEGHT)
         self.setStyleSheet("""
             QWidget {
@@ -789,14 +791,23 @@ class MainWindow(QWidget):
         if hasattr(self, 'hotkey_thread'):
             self.hotkey_thread.quit()
             self.hotkey_thread.wait()
+    
+    def reset_handling_flag(self):
+        self.is_handling_hotkey = False
 
-    def handle_hotkey(self):
-        if self.isActiveWindow():
+    def handle_foreground_hotkey(self):
+        if not self.is_handling_hotkey and self.isActiveWindow():
+            self.is_handling_hotkey = True
             print("前台快捷键被触发")
             self.minimize_window()
-        else:
+            QTimer.singleShot(100, self.reset_handling_flag)
+
+    def handle_background_hotkey(self):
+        if not self.is_handling_hotkey and not self.isActiveWindow():
+            self.is_handling_hotkey = True
             print("后台快捷键被触发")
             self.restore_window()
+            QTimer.singleShot(100, self.reset_handling_flag)
 
     def minimize_window(self):
         self.hide()
@@ -852,9 +863,10 @@ class MainWindow(QWidget):
         
         self.global_filter = GlobalEventFilter()
         QApplication.instance().installEventFilter(self.global_filter)
+        self.global_filter.foreground_hotkey_pressed.connect(self.handle_foreground_hotkey)
 
         self.hotkey_listener = HotkeyListener()
-        self.hotkey_listener.background_hotkey_pressed.connect(self.handle_hotkey)
+        self.hotkey_listener.background_hotkey_pressed.connect(self.handle_background_hotkey)
         
         self.hotkey_thread = QThread()
         self.hotkey_listener.moveToThread(self.hotkey_thread)
