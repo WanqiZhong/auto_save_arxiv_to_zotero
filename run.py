@@ -697,11 +697,11 @@ class MainWindow(QWidget):
         self.select_collection_button.clicked.connect(self.show_collection_dialog)
         url_layout.addWidget(self.select_collection_button)
 
-        self.add_url_button = QPushButton("↵")
+        self.add_url_button = QPushButton(" ↵ ")
         self.add_url_button.clicked.connect(self.add_url)
         url_layout.addWidget(self.add_url_button)
 
-        self.toggle_button = QPushButton("▲")
+        self.toggle_button = QPushButton(" ▲ ")
         self.toggle_button.setCheckable(True)
         self.toggle_button.clicked.connect(self.toggle_lower_section)
         url_layout.addWidget(self.toggle_button)
@@ -785,9 +785,6 @@ class MainWindow(QWidget):
         # Setup Global Hotkey Listener
         self.setup_global_hotkey()
 
-        self.setWindowFlags(Qt.FramelessWindowHint) 
-        self.setMouseTracking(True)
-
     def __del__(self):
         if hasattr(self, 'hotkey_listener'):
             self.hotkey_listener.stop_listening()
@@ -830,12 +827,12 @@ class MainWindow(QWidget):
     def toggle_lower_section(self):
         if self.toggle_button.isChecked():
             self.lower_container.hide()
-            self.toggle_button.setText("▼")
-            self.resize(self.width(), self.url_input.height() + 20)  
+            self.toggle_button.setText(" ▼ ")
         else:
             self.lower_container.show()
-            self.toggle_button.setText("▲")
-            self.resize(self.width(), self.OPEN_HIEGHT)
+            self.toggle_button.setText(" ▲ ")
+        self.adjustSize()  
+
 
     def setup_tray_icon(self):
         self.tray_icon = QSystemTrayIcon(self)
