@@ -616,8 +616,18 @@ class UrlItemWidget(QWidget):
         layout.addWidget(self.collection_button)
         layout.setContentsMargins(0, 0, 0, 0)
 
+class GlobalEventFilter(QObject):
+    foreground_hotkey_pressed = pyqtSignal()
+
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.KeyPress:
+            if event.key() == Qt.Key_Space and event.modifiers() == Qt.AltModifier:
+                self.foreground_hotkey_pressed.emit()
+                return True
+        return super().eventFilter(obj, event)
+
 class HotkeyListener(QObject):
-    hotkey_pressed = pyqtSignal()
+    background_hotkey_pressed = pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -634,17 +644,7 @@ class HotkeyListener(QObject):
             self.listener.stop()
 
     def _on_hotkey(self):
-        self.hotkey_pressed.emit()
-
-class GlobalEventFilter(QObject):
-    alt_space_pressed = pyqtSignal()
-
-    def eventFilter(self, obj, event):
-        if event.type() == QEvent.KeyPress:
-            if event.key() == Qt.Key_Space and event.modifiers() == Qt.AltModifier:
-                self.alt_space_pressed.emit()
-                return True
-        return super().eventFilter(obj, event)
+        self.background_hotkey_pressed.emit()
 
 class MainWindow(QWidget):
     def __init__(self):
@@ -780,14 +780,8 @@ class MainWindow(QWidget):
         self.setup_tray_icon()
 
         # Setup Global Hotkey Listener
-        self.shortcut = QShortcut(QKeySequence("Alt+Space"), self)
-        self.shortcut.activated.connect(self.toggle_window)
-
-        # 设置全局事件过滤器
-        self.global_filter = GlobalEventFilter()
-        QApplication.instance().installEventFilter(self.global_filter)
-        self.global_filter.alt_space_pressed.connect(self.toggle_window)
         self.setup_global_hotkey()
+        self.is_minimized = False
 
     def __del__(self):
         if hasattr(self, 'hotkey_listener'):
@@ -795,6 +789,32 @@ class MainWindow(QWidget):
         if hasattr(self, 'hotkey_thread'):
             self.hotkey_thread.quit()
             self.hotkey_thread.wait()
+
+    def handle_foreground_hotkey(self):
+        print("前台快捷键被触发")
+        if self.isActiveWindow():
+            self.minimize_window()
+
+    def handle_background_hotkey(self):
+        print("后台快捷键被触发")
+        if not self.isActiveWindow():
+            self.restore_window()
+
+    def minimize_window(self):
+        self.is_minimized = True
+        self.hide()
+
+    def restore_window(self):
+        if self.is_minimized:
+            self.show()
+            self.raise_()
+            self.activateWindow()
+            self.is_minimized = False
+
+    def closeEvent(self, event):
+        event.ignore()
+        self.minimize_window()
+
     
     def toggle_lower_section(self):
         if self.toggle_button.isChecked():
@@ -811,11 +831,11 @@ class MainWindow(QWidget):
         tray_menu = QMenu()
 
         show_action = QAction("显示", self)
-        show_action.triggered.connect(self.show_window)
+        show_action.triggered.connect(self.restore_window)
         tray_menu.addAction(show_action)
 
         hide_action = QAction("隐藏", self)
-        hide_action.triggered.connect(self.hide_window)
+        hide_action.triggered.connect(self.minimize_window)
         tray_menu.addAction(hide_action)
 
         quit_action = QAction("退出", self)
@@ -828,14 +848,19 @@ class MainWindow(QWidget):
 
 
     def setup_global_hotkey(self):
-        self.hotkey_listener = HotkeyListener()
-        self.hotkey_listener.hotkey_pressed.connect(self.toggle_window)
         
-        # 使用 QThread 来运行监听器
+        self.global_filter = GlobalEventFilter()
+        QApplication.instance().installEventFilter(self.global_filter)
+        self.global_filter.foreground_hotkey_pressed.connect(self.handle_foreground_hotkey)
+
+        self.hotkey_listener = HotkeyListener()
+        self.hotkey_listener.background_hotkey_pressed.connect(self.handle_background_hotkey)
+        
         self.hotkey_thread = QThread()
         self.hotkey_listener.moveToThread(self.hotkey_thread)
         self.hotkey_thread.started.connect(self.hotkey_listener.start_listening)
         self.hotkey_thread.start()
+
 
     def check_accessibility_permissions(self):
         """
@@ -860,29 +885,11 @@ class MainWindow(QWidget):
         if reason == QSystemTrayIcon.DoubleClick:
             self.toggle_window()
 
-    def show_window(self):
-        self.show()
-        self.raise_()
-        self.activateWindow()
-
-    def hide_window(self):
-        self.hide()
-
     def toggle_window(self):
         if self.isVisible() and self.isActiveWindow():
-            self.hide()
+            self.minimize_window()
         else:
-            self.show_window()
-
-    def closeEvent(self, event):
-        event.ignore()
-        self.hide_window()
-        self.tray_icon.showMessage(
-            "Webpage to Zotero Saver",
-            "程序已最小化到托盘。双击托盘图标或使用快捷键唤起。",
-            QSystemTrayIcon.Information,
-            2000
-        )
+            self.restore_window()
 
     def open_saved_html(self):
         row = self.table_widget.currentRow()
