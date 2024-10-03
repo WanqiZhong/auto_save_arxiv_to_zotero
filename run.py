@@ -54,21 +54,6 @@ def resource_path(relative_path):
 
 CONFIG_FILE = resource_path('config/config.json')
 
-def set_window_always_on_top(widget):
-    if sys.platform != 'darwin':
-        return  
-
-    window = widget.windowHandle()
-    if window is None:
-        return
-
-    nswindow_ptr = window.winId()
-    NSWindowClass = objc.lookUpClass('NSWindow')
-    nswindow = sip.wrapinstance(int(nswindow_ptr), NSWindowClass)
-
-
-    nswindow.setLevel_(NSFloatingWindowLevel)
-
 # --- Worker Signals ---
 class WorkerSignals(QObject):
     progress = pyqtSignal(int, int)     # (row, progress_value)
@@ -843,7 +828,6 @@ class MainWindow(QWidget):
         # Setup Global Hotkey Listener
         self.setup_global_hotkey()
         self.adjustSize()
-        self.setup_vibrancy()
 
     def setup_vibrancy(self):
         if sys.platform != "darwin":
@@ -1291,6 +1275,7 @@ def main():
     app.setQuitOnLastWindowClosed(False) 
     window = MainWindow()
     window.show()
+    window.setup_vibrancy() 
     sys.exit(app.exec_())
 
 if __name__ == "__main__":
