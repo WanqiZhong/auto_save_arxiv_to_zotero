@@ -964,8 +964,10 @@ class MainWindow(QWidget):
                 self.current_collection_name = selected_name
                 self.update_collection_display()
                 self.save_current_collection()  # 保存当前选中的文献库
-        self.load_zotero_collections()
 
+        # Use new thread to avoid blocking the main thread
+        threading.Thread(target=self.load_zotero_collections).start()
+        
 
     def update_collection_display(self):
         if self.current_collection_name:
