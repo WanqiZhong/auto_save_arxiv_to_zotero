@@ -942,12 +942,13 @@ class MainWindow(QWidget):
 
     def load_zotero_collections(self):
         try:
-            zot = zotero.Zotero(
-                self.args['library_id'],
-                self.args['library_type'],
-                self.args['api_key']
-            )
-            collections = zot.collections()
+            if not hasattr(self, 'zot'):
+                self.zot = zotero.Zotero(
+                    self.args['library_id'],
+                    self.args['library_type'],
+                    self.args['api_key']
+                )
+            collections = self.zot.collections()
             self.collections = self.build_collection_tree(collections)
         except Exception as e:
             self.set_config()
@@ -963,6 +964,7 @@ class MainWindow(QWidget):
                 self.current_collection_name = selected_name
                 self.update_collection_display()
                 self.save_current_collection()  # 保存当前选中的文献库
+
 
     def update_collection_display(self):
         if self.current_collection_name:
