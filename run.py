@@ -953,9 +953,8 @@ class MainWindow(QWidget):
             self.set_config()
 
     def show_collection_dialog(self):
-        if not hasattr(self, 'collections'):
-            self.load_zotero_collections()
-        
+        # if not hasattr(self, 'collections'):
+        self.load_zotero_collections()
         dialog = CollectionDialog(self.collections, self)
         if dialog.exec_():
             selected_key, selected_name = dialog.get_selected_collection()
@@ -1062,8 +1061,6 @@ class MainWindow(QWidget):
             worker = SavePageWorker(row, url, {**self.args, 'collection_key': collection_key}, signals, cancel_event)
             self.executor.submit(worker.run)
             self.row_event[row] = cancel_event
-
-
 
     def build_collection_tree(self, collections):
         tree = []
