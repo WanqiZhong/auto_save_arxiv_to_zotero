@@ -954,8 +954,8 @@ class MainWindow(QWidget):
             self.set_config()
 
     def show_collection_dialog(self):
-        # if not hasattr(self, 'collections'):
-        self.load_zotero_collections()
+        if not hasattr(self, 'collections'):
+            self.load_zotero_collections()
         dialog = CollectionDialog(self.collections, self)
         if dialog.exec_():
             selected_key, selected_name = dialog.get_selected_collection()
@@ -964,6 +964,7 @@ class MainWindow(QWidget):
                 self.current_collection_name = selected_name
                 self.update_collection_display()
                 self.save_current_collection()  # 保存当前选中的文献库
+        self.load_zotero_collections()
 
 
     def update_collection_display(self):
