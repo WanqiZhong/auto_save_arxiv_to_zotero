@@ -87,10 +87,10 @@ class SavePageWorker:
         8. arxiv:YYMM.NNNNN (Zotero 中的 Arxiv 链接格式)
         """
 
+        arxiv_url = arxiv_url.replace(' ', '').lower()
         # 如果没有 /，则可能是 Zotero 中的 Arxiv 链接格式
         if '/' not in arxiv_url:
             # 去除所有多余空格
-            arxiv_url = arxiv_url.replace(' ', '')
             match = re.search(r'arxiv:(\d{4})\.(\d{5})', arxiv_url)
             if not match:
                 print("无效的 Arxiv 链接格式")
