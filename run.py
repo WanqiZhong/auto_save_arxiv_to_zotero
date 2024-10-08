@@ -97,10 +97,10 @@ class SavePageWorker:
                 print(supported_formats)
                 return None
 
-            paper_year = int(match.group(1)[:2])
+            paper_year = int(match.group(1)[:2]) + 2000
             paper_month = int(match.group(1)[2:4])
-            arxiv_id = match.group(2)
-            arxiv_url = f"https://arxiv.org/abs/{paper_year}{paper_month}.{arxiv_id}"
+            arxiv_url = f"https://arxiv.org/abs/{match.group(1)}.{match.group(2)}"
+            print(f"转换为标准 Arxiv 链接: {arxiv_url}")
 
         else:
             # 补全无 http 前缀的链接
