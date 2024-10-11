@@ -29,7 +29,7 @@ if is_py2app():
 
     OPTIONS = {
         'argv_emulation': True,
-        'packages': ['PyQt5', 'playwright', 'bs4', 'tqdm', 'pyzotero'],
+        'packages': ['PyQt5', 'playwright', 'bs4', 'tqdm', 'pyzotero', 'pynput'],
         'iconfile': 'config/icon.png',  # 确保这个路径正确
         'plist': {
             'CFBundleName': 'AutoSaveToZotero',
@@ -56,7 +56,8 @@ if is_py2app():
             'playwright>=1.47.0',
             'beautifulsoup4>=4.11.2',
             'tqdm>=4.66.1',
-            'pyzotero>=1.5.25'
+            'pyzotero>=1.5.25',
+            'pynput'
         ],
     )
 else:
@@ -72,5 +73,6 @@ else:
             'beautifulsoup4>=4.11.2',
             'tqdm>=4.66.1',
             'pyzotero>=1.5.25',
+            'pynput'
         ],
     )
