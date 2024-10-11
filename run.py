@@ -798,16 +798,18 @@ class MainWindow(QWidget):
         self.current_collection_name = self.args.get('last_used_collection_name', '')
         self.update_collection_display()
 
-        if not self.check_accessibility_permissions():
-            reply = QMessageBox.question(
-                self,
-                "权限不足",
-                "程序需要辅助功能权限才能监听全局快捷键。\n"
-                "是否前往系统偏好设置授予权限？",
-                QMessageBox.Yes | QMessageBox.No
-            )
-            if reply == QMessageBox.Yes:
-                subprocess.call(["open", "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"])
+
+        if sys.platform == 'darwin':
+            if not self.check_accessibility_permissions():
+                reply = QMessageBox.question(
+                    self,
+                    "权限不足",
+                    "程序需要辅助功能权限才能监听全局快捷键。\n"
+                    "是否前往系统偏好设置授予权限？",
+                    QMessageBox.Yes | QMessageBox.No
+                )
+                if reply == QMessageBox.Yes:
+                    subprocess.call(["open", "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"])
 
         # Setup System Tray
         self.setup_tray_icon()
