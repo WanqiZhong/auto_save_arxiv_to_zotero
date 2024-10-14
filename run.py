@@ -91,7 +91,7 @@ class SavePageWorker:
         # 如果没有 /，则可能是 Zotero 中的 Arxiv 链接格式
         if '/' not in arxiv_url:
             # 去除所有多余空格
-            match = re.search(r'arxiv:(\d{4})\.(\d{5})', arxiv_url)
+            match = re.search(r'arxiv:(\d{4})\.(\d{5})(v\d+)?', arxiv_url)
             if not match:
                 print("无效的 Arxiv 链接格式")
                 print(supported_formats)
@@ -108,7 +108,7 @@ class SavePageWorker:
                 arxiv_url = 'https://' + arxiv_url
 
             # 正则匹配不同格式的 Arxiv 链接
-            match = re.search(r'https://(?:arxiv\.org|ar5iv\.labs\.arxiv\.org|ar5iv\.org|)/(abs|html|pdf)/(\d{4})\.(\d{5})', arxiv_url)
+            match = re.search(r'https://(?:arxiv\.org|ar5iv\.labs\.arxiv\.org|ar5iv\.org|)/(abs|html|pdf)/(\d{4})\.(\d{5})(v\d+)?', arxiv_url)
             if not match:
                 print("无效的 Arxiv 链接格式")
                 print(supported_formats)
